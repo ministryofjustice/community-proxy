@@ -23,20 +23,20 @@ import java.util.List;
 public class RestTemplateConfiguration {
 
     private final OAuth2ClientContext oauth2ClientContext;
-    private final ClientCredentialsResourceDetails elite2apiDetails;
+    private final ClientCredentialsResourceDetails communityApiDetails;
 
     @Value("${community.api.uri.root}")
     private String apiRootUri;
 
     @Value("${community.endpoint.url}")
-    private String elite2apiRootUri;
+    private String communityApiRootUri;
 
     @Autowired
     public RestTemplateConfiguration(
             OAuth2ClientContext oauth2ClientContext,
-            ClientCredentialsResourceDetails elite2apiDetails) {
+            ClientCredentialsResourceDetails communityApiDetails) {
         this.oauth2ClientContext = oauth2ClientContext;
-        this.elite2apiDetails = elite2apiDetails;
+        this.communityApiDetails = communityApiDetails;
     }
 
     @Bean
@@ -47,10 +47,10 @@ public class RestTemplateConfiguration {
                 .build();
     }
 
-    @Bean(name = "elite2ApiHealthRestTemplate")
-    public RestTemplate elite2ApiHealthRestTemplate(RestTemplateBuilder restTemplateBuilder) {
+    @Bean(name = "communityApiHealthRestTemplate")
+    public RestTemplate communityApiHealthRestTemplate(RestTemplateBuilder restTemplateBuilder) {
         return restTemplateBuilder
-                .rootUri(elite2apiRootUri)
+                .rootUri(apiRootUri)
                 .additionalInterceptors(getRequestInterceptors())
                 .build();
     }
@@ -62,16 +62,17 @@ public class RestTemplateConfiguration {
     }
 
     @Bean
-    public OAuth2RestTemplate elite2SystemRestTemplate(GatewayAwareAccessTokenProvider accessTokenProvider) {
+    public OAuth2RestTemplate communitySystemRestTemplate(GatewayAwareAccessTokenProvider accessTokenProvider) {
 
-        OAuth2RestTemplate elite2SystemRestTemplate = new OAuth2RestTemplate(elite2apiDetails, oauth2ClientContext);
-        List<ClientHttpRequestInterceptor> systemInterceptors = elite2SystemRestTemplate.getInterceptors();
+        OAuth2RestTemplate communitySystemRestTemplate = new OAuth2RestTemplate(communityApiDetails, oauth2ClientContext);
+        List<ClientHttpRequestInterceptor> systemInterceptors = communitySystemRestTemplate.getInterceptors();
         systemInterceptors.add(new UserContextInterceptor());
 
-        elite2SystemRestTemplate.setAccessTokenProvider(accessTokenProvider);
+        communitySystemRestTemplate.setAccessTokenProvider(accessTokenProvider);
 
-        RootUriTemplateHandler.addTo(elite2SystemRestTemplate, this.apiRootUri);
-        return elite2SystemRestTemplate;
+        RootUriTemplateHandler.addTo(communitySystemRestTemplate, this.apiRootUri);
+
+        return communitySystemRestTemplate;
     }
 
     /**

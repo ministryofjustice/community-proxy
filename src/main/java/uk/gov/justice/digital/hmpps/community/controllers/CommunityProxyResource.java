@@ -11,13 +11,9 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-@Api(tags = {"community-proxy"},
-        authorizations = {@Authorization("COMMUNITY_API")},
-        description = "Provides proxying and authentication for the Community API and Delius data")
+@Api(tags = {"community-proxy"}, authorizations = {@Authorization("COMMUNITY_API")})
 @RestController
-@RequestMapping(
-        value = "communityapi",
-        produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "communityapi", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class CommunityProxyResource {
 
@@ -34,9 +30,11 @@ public class CommunityProxyResource {
             nickname = "getOffendersForResponsibleOfficer")
     @ApiResponses(
             value = {
-            @ApiResponse(code = 200, message = "OK", response = List.class),
-            @ApiResponse(code = 400, message = "Invalid request", response = ErrorResponse.class),
-            @ApiResponse(code = 500, message = "Unrecoverable error whilst processing request.", response = ErrorResponse.class)
+                    @ApiResponse(code = 200, message = "OK", response = List.class),
+                    @ApiResponse(code = 400, message = "Invalid request", response = ErrorResponse.class),
+                    @ApiResponse(code = 401, message = "Unauthorised", response = ErrorResponse.class),
+                    @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
+                    @ApiResponse(code = 500, message = "Unrecoverable error whilst processing request.", response = ErrorResponse.class)
             })
     @GetMapping(path = "/offendersByResponsibleOfficer/{staffId}")
     public List<Offender> getOffendersForResponsibleOfficer(@ApiParam(name = "staffId", value = "Staff ID of the responsible officer", example = "CWD9898", required = true)

@@ -132,8 +132,8 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 
     @Bean
     // TODO - don't need this 
-    @ConfigurationProperties("elite2api.client")
-    public ClientCredentialsResourceDetails elite2apiClientCredentials() {
+    @ConfigurationProperties("communitapi.client")
+    public ClientCredentialsResourceDetails communityApiClientCredentials() {
         return new ClientCredentialsResourceDetails();
     }
 

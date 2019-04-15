@@ -11,12 +11,12 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-public class Elite2ApiHealth implements HealthIndicator {
+public class CommunityApiHealth implements HealthIndicator {
 
     private final RestTemplate restTemplate;
 
     @Autowired
-    public Elite2ApiHealth(@Qualifier("elite2ApiHealthRestTemplate") RestTemplate restTemplate) {
+    public CommunityApiHealth(@Qualifier("communityApiHealthRestTemplate") RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
-import uk.gov.justice.digital.hmpps.community.model.ErrorResponse;
 import uk.gov.justice.digital.hmpps.community.exception.OffenderNotFoundException;
+import uk.gov.justice.digital.hmpps.community.exception.StaffNotFoundException;
+import uk.gov.justice.digital.hmpps.community.model.ErrorResponse;
 
 
 @RestControllerAdvice(basePackageClasses = CommunityProxyResource.class)
@@ -59,7 +60,7 @@ public class ControllerAdvice {
                         .build());
     }
 
-    @ExceptionHandler(OffenderNotFoundException.class)
+    @ExceptionHandler({OffenderNotFoundException.class, StaffNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleNotFoundException(Exception e) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
@@ -69,4 +70,5 @@ public class ControllerAdvice {
                         .developerMessage(e.getMessage())
                         .build());
     }
+
 }
