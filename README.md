@@ -2,10 +2,16 @@
 
 This API accepts and authorises requests on behalf of the Commnunity API and only forwards authenticated clients.
 
-The authentication involves checking the JWT token provided by the client as a header, checking that the token
-has the correct signature (ie. issued by the MOJ oauth2 service) and also checking that the token contains
-the role that is appropriate for the resource requested.
+The authentication process involves checking the JWT token provided by the client as a header, checking that the token
+has the correct signature (ie. issued by the MOJ oauth2 service) and that the token contains the role that is appropriate for 
+the resource requested, in this case ROLE_COMMUNITY_API.
 
+The service offers the following endpoints:
+
+'''List<Offenders>   /communityapi/api/offenderManagers/staffCode/{staffId}/offenders   '''
+'''ResponsibleOfficer /communityapi/api/offenders/nomsNumber/{nomsId}/responsibleOfficer'''
+
+These are identical (apart from the leading "/communityapi/") to what is accepted by the real CommunityApi.
 
 # Build, test and run locally
 
@@ -17,15 +23,13 @@ There is a .circleci/config.yml file which defines the workflow steps.
 
 # Environments
 
-* T3 - Development
 * T2 - Stage
-* preprod - Pre-production
 * prod - Production
 
 # Properties
 
 server.port                             :     8080
-community.endpoint.url      :    http://pdp400.xxx.xxx.xxx 
+community.endpoint.url      :    The URL where this service listens - http://host:port/communityapi 
 community.api.uri.root        :    ${community.endpoint.url}/api
 
 

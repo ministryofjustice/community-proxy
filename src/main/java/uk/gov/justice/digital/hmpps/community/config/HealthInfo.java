@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 /** 
 * Adds version data to the /health endpoint. 
-* This is called by the UI to display API details 
+* This is called by the monitor UI to display API details
 */
 @Component
 public class HealthInfo implements HealthIndicator {

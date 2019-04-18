@@ -24,28 +24,30 @@ public class CommunityProxyService {
         this.minNumAssaults = minNumAssaults;
     }
 
-    @PreAuthorize("hasRole('COMMUNITY_API')")
+    // TODO: Removed for initial tests
+    // @PreAuthorize("hasRole('ROLE_COMMUNITY_API')")
     public List<Offender> getOffendersForResponsibleOfficer(@NotNull final String staffId) {
 
         log.debug("Get offenders for responsible officer with staff ID {}", staffId);
 
         var offenders = communityApiClient.getOffendersForResponsibleOfficer(staffId);
 
-        // TODO; Convert the data from external Community API to gthe API model advertised i swagger
+        // TODO: Convert the data from external Community API to the API model of this service
 
         log.debug("Returned {} offenders for this officer", offenders == null ? 0 : offenders.size());
 
         return offenders;
     }
 
-    @PreAuthorize("hasRole('COMMUNITY_API')")
+    // TODO: Removed for initial tests
+    // @PreAuthorize("hasRole('ROLE_COMMUNITY_API')")
     public ResponsibleOfficer getResponsibleOfficerForOffender(@NotNull final String nomsId) {
 
         log.debug("Get offenders for responsible officer with staff ID {}", nomsId);
 
         var responsibleOfficer = communityApiClient.getResponsibleOfficerForOffender(nomsId);
 
-        // TODO: Convert the data from external Community API to gthe API model advertised i swagger
+        // TODO: Convert the data from external Community API to the API model of this service
 
         log.debug("Returned responsible officer staffCode {}", responsibleOfficer == null ? "" : responsibleOfficer.getStaffCode());
 
