@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 
-import java.time.LocalDate;
-
-@ApiModel(description = "Offender")
+@ApiModel(description = "ResponsibleOfficer")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
 @AllArgsConstructor
@@ -14,6 +12,9 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @ToString
 @Data
-public class Offender {
-    private String offenderNo;
+public class ResponsibleOfficer {
+    private String username;
+    private String staffCode;
+    private String forenames;
+    private String surname;
 }

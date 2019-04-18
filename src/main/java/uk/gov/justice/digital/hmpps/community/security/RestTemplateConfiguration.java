@@ -28,9 +28,6 @@ public class RestTemplateConfiguration {
     @Value("${community.api.uri.root}")
     private String apiRootUri;
 
-    @Value("${community.endpoint.url}")
-    private String communityApiRootUri;
-
     @Autowired
     public RestTemplateConfiguration(
             OAuth2ClientContext oauth2ClientContext,

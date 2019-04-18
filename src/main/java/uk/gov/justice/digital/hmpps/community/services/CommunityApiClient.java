@@ -5,8 +5,8 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriTemplate;
 import uk.gov.justice.digital.hmpps.community.model.Offender;
+import uk.gov.justice.digital.hmpps.community.model.ResponsibleOfficer;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 @Service
@@ -21,18 +21,37 @@ public class CommunityApiClient {
     }
 
     /**
-     *  Use the RestCallHelper to send a request to the CommunityApi for the list of offenders managed by this responsible officer.
+     *  Use the RestCallHelper to request  a list of offenders managed by the staffId provided
+     *
      * @param staffId String
      * @return List<Offender>
      */
 
     public List<Offender> getOffendersForResponsibleOfficer(String staffId) {
 
-        log.info("Getting offenders for staff id  {}", staffId);
+        final var uriOffenders = "/offenderManagers/staffCode/{staffId}/offenders";
 
-        final var uriOffendersForResponsibleOfficer = "/api/community/{staffId}/offenders";
-        final var  uri = new UriTemplate(uriOffendersForResponsibleOfficer).expand(staffId);
+        final var  uri = new UriTemplate(uriOffenders).expand(staffId);
 
         return restCallHelper.getForList(uri, OFFENDERS).getBody();
     }
+
+
+    /**
+     *  Use the RestCallHelper to request  the responsible officer assigned to an given offender.
+     *
+     * @param nomsId String
+     * @return ResponsibleOfficer
+     */
+
+    public ResponsibleOfficer getResponsibleOfficerForOffender(String nomsId) {
+
+        final var uriResponsibleOfficer = "/offenders/nomsNumber/{nomsId}/responsibleOfficer";
+
+        final var  uri = new UriTemplate(uriResponsibleOfficer).expand(nomsId);
+
+        return restCallHelper.get(uri, ResponsibleOfficer.class);
+    }
+
+
 }
