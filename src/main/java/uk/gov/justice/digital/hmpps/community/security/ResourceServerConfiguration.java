@@ -60,8 +60,12 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                         "/csrf",
                         "/health",
                         "/info",
+                        "/api",
+                        "/communityapi",
                         "/v2/api-docs",
-                        "/swagger-ui.html", "/swagger-resources", "/swagger-resources/configuration/ui",
+                        "/swagger-ui.html",
+                        "/swagger-resources",
+                        "/swagger-resources/configuration/ui",
                         "/swagger-resources/configuration/security").permitAll()
                 .anyRequest()
                 .authenticated();

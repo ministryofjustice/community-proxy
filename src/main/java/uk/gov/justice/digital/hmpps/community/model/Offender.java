@@ -2,9 +2,8 @@ package uk.gov.justice.digital.hmpps.community.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-
-import java.time.LocalDate;
 
 @ApiModel(description = "Offender")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -15,5 +14,7 @@ import java.time.LocalDate;
 @ToString
 @Data
 public class Offender {
+
+    @ApiModelProperty(value = "NomsId of the offender", example = "AA333G", position = 0)
     private String offenderNo;
 }

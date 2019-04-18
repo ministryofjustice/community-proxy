@@ -31,7 +31,7 @@ public class CommunityProxyResource {
             nickname = "getOffendersForResponsibleOfficer")
     @ApiResponses(
             value = {
-                    @ApiResponse(code = 200, message = "OK", response = List.class),
+                    @ApiResponse(code = 200, message = "OK", response = Offender.class ,responseContainer = "List"),
                     @ApiResponse(code = 400, message = "Invalid request", response = ErrorResponse.class),
                     @ApiResponse(code = 401, message = "Unauthorised", response = ErrorResponse.class),
                     @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
@@ -50,7 +50,7 @@ public class CommunityProxyResource {
             nickname = "getResponsibleOfficerForOffender")
     @ApiResponses(
             value = {
-                    @ApiResponse(code = 200, message = "OK", response = List.class),
+                    @ApiResponse(code = 200, message = "OK", response = ResponsibleOfficer.class),
                     @ApiResponse(code = 400, message = "Invalid request", response = ErrorResponse.class),
                     @ApiResponse(code = 401, message = "Unauthorised", response = ErrorResponse.class),
                     @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
