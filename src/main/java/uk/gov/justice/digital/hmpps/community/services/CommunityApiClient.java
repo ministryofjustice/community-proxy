@@ -34,7 +34,7 @@ public class CommunityApiClient {
         final var  uri = new UriTemplate(uriOffenders).expand(staffId);
 
         // Keep the restCallHelper so the mocked tests still pass
-        final var result = restCallHelper.getForList(uri, OFFENDERS).getBody();
+        // final var result = restCallHelper.getForList(uri, OFFENDERS).getBody();
 
         // Return a static data set for conectivity check
        return List.of (
@@ -58,7 +58,7 @@ public class CommunityApiClient {
         final var  uri = new UriTemplate(uriResponsibleOfficer).expand(nomsId);
 
         // Keep the restCallHelper involved so the mocked tests still pass
-        final var result = restCallHelper.get(uri, ResponsibleOfficer.class);
+        // final var result = restCallHelper.get(uri, ResponsibleOfficer.class);
 
         // Return a static data set for conectivity check
         return ResponsibleOfficer.builder().staffCode("AA999B").forenames("Jean Michel").surname("Jarre").username("JMJARRE1").build();

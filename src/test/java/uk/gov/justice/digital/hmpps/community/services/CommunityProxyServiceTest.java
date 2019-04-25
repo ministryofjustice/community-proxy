@@ -26,7 +26,7 @@ public class CommunityProxyServiceTest {
 
     @Before
     public void setup() {
-        service = new CommunityProxyService(communityApiClient, 0);
+        service = new CommunityProxyService(communityApiClient);
         offenders = List.of(
                 Offender.builder().offenderNo("IT9999").build(),
                 Offender.builder().offenderNo("IT0001").build()
