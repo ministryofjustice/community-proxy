@@ -7,7 +7,7 @@ WORKDIR /app
 
 COPY build/libs/community-proxy*.jar /app/app.jar
 COPY run.sh /app
-COPY src/main/resources/*.crt /app/
+COPY keystores/*.jks /app/
 
 EXPOSE 8080
 
