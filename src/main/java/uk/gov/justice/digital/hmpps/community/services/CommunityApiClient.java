@@ -62,8 +62,6 @@ public class CommunityApiClient {
 
         // Return a static data set for conectivity check
         return ResponsibleOfficer.builder().staffCode("AA999B").forenames("Jean Michel").surname("Jarre").username("JMJARRE1").build();
-
-
     }
 
 }
