@@ -10,6 +10,8 @@ The service offers the following endpoints:
 
 '''List<Offenders>   /communityapi/api/offenderManagers/staffCode/{staffId}/offenders   '''
 '''ResponsibleOfficer /communityapi/api/offenders/nomsNumber/{nomsId}/responsibleOfficer'''
+'''/communityapi/health'''
+'''/communityapi/status'''
 
 These are identical (apart from the leading "/communityapi/") to what is accepted by the real CommunityApi.
 
@@ -21,42 +23,39 @@ These are identical (apart from the leading "/communityapi/") to what is accepte
 
 There is a .circleci/config.yml file which defines the workflow steps.
 
-# Environments
-
-* T2 - Stage
-* prod - Production
-
 # Properties
 
-server.port                             :     8080
-community.endpoint.url      :    The URL where this service listens - http://host:port/communityapi 
-community.api.uri.root        :    ${community.endpoint.url}/api
+server.port             :    8080 within the container
+community.endpoint.url  :    The URL where the community API listens e.g. https://ndseis.ad.nps.internal | oasys400.noms.gsi.gov.uk
 
 
 # Deployment
 
 Deployment is handled manually. This sevice resides in the Fix And Go environment:
 
-    Stage (T2) - t2pml0007
-    Prod            - ????
+    Stage (T2) - t2pml0007   - curl -v -k https://oasys400.noms.gsi.gov.uk/api/health
+    Prod       - pdpml00025  - curl -v --resolve ndseis.ad.nps.internal:443:10.162.217.15 \
+                                       --cacert ndseis-ad-nps-internal.crt https://ndseis.ad.nps.internal/api/health
     
-This is deployed within docker to the two NDH hosts above to act as the Community API proxy.
+The proxy application is deployed in a docker container on the NDH hosts above and acts as a proxy service for the Community API.
 
-The service is temporary and will handle Oauth2 token authentication on behalf of the CommunityAPI until such time as it performs this itself.
+The service is temporary and will handle Oauth2 token authentication on behalf of the Community API until such time it can be altered 
+to perform this itself
 
 # Docker
 
-The Dockerfile exposes port 8080 in the container and the docker run command maps 8080/tcp in the container to 8081/tcp on the docker host.
-
-To build & push the docker image to Docker Hub: 
-
-$ docker build -t ministryofjustice/community-proxy .
-$ docker login
-$ docker push ministryofjustice/community-proxy:latest
-
-To run the container locally and expose 8081 to the local host:
+The Dockerfile exposes port 8080 in the container and the docker run command maps this to 8081/tcp on the docker host.
  
-$ docker run -p 8081:8080 -name "community-proxy" -d -t ministryofjustice/community-proxy:latest
+To build & push the docker image to Docker Hub: 
+ 
+$ docker build -t mojdigitalstudio/community-proxy:latest .
+$ docker login
+$ docker push mojdigitalstudio/community-proxy:latest
+ 
+To run the container locally and expose 8081 to the local host:
+  
+$ docker pull mojdigitialstudio/community-proxy:latest
+$ docker run -p 8081:8080 -name "community-proxy" -d -t mojdigitalstudio/community-proxy:latest
 
 
 # IntelliJ setup
@@ -67,3 +66,4 @@ $ docker run -p 8081:8080 -name "community-proxy" -d -t ministryofjustice/commun
 - Enable the lombok plugin in IntelliJ and restart if necessary
 - Enable annotation Processing at "Settings > Build > Compiler > Annotation Processors"
 - Ensure commandline and IntelliJ build project and pass all tests
+

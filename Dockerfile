@@ -7,10 +7,8 @@ WORKDIR /app
 
 COPY build/libs/community-proxy*.jar /app/app.jar
 COPY run.sh /app
+COPY src/main/resources/*.crt /app/
 
 EXPOSE 8080
-
-# Add system properties if using an external trust store.
-# Also copy this trust store into the image.
 
 ENTRYPOINT ["/bin/sh", "/app/run.sh"]

@@ -12,9 +12,9 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-@Api(tags = {"community-proxy"}, authorizations = {@Authorization("COMMUNITY_API")})
+@Api(tags = {"community-proxy"}, authorizations = {@Authorization("ROLE_COMMUNITY")})
 @RestController
-@RequestMapping(value = "communityapi/api", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "api", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class CommunityProxyResource {
 
@@ -27,7 +27,7 @@ public class CommunityProxyResource {
     @ApiOperation(
             value = "Return list of of offenders for one responsible officer (RO)",
             notes = "Accepts a Delius staff id for the responsible officer",
-            authorizations = {@Authorization("COMMUNITY_API")},
+            authorizations = {@Authorization("ROLE_COMMUNITY")},
             nickname = "getOffendersForResponsibleOfficer")
     @ApiResponses(
             value = {
@@ -46,7 +46,7 @@ public class CommunityProxyResource {
     @ApiOperation(
             value = "Return the responsible officer (RO) for an offender",
             notes = "Accepts a nomisId (offenderNo) in the format A9999AA",
-            authorizations = {@Authorization("COMMUNITY_API")},
+            authorizations = {@Authorization("ROLE_COMMUNITY")},
             nickname = "getResponsibleOfficerForOffender")
     @ApiResponses(
             value = {
