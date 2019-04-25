@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.net.URI;
 
 /**
- * Helper class that takes care of setting up rest templates with a base API url and required request headers.
+ * Helper class that sets up the rest template with a base URL and required request headers.
  */
 @Component
 public class RestCallHelper {
@@ -24,19 +24,11 @@ public class RestCallHelper {
     }
 
     protected <T> ResponseEntity<T> getForList(URI uri, ParameterizedTypeReference<T> responseType) {
-        return restTemplate.exchange(
-                uri.toString(),
-                HttpMethod.GET,
-                null,
-                responseType);
+        return restTemplate.exchange(uri.toString(), HttpMethod.GET, null, responseType);
     }
 
     protected <T> T get(URI uri, Class<T> responseType) {
-        ResponseEntity<T> exchange = restTemplate.exchange(
-                uri.toString(),
-                HttpMethod.GET,
-                new HttpEntity<>(null, CONTENT_TYPE_APPLICATION_JSON),
-                responseType);
+        ResponseEntity<T> exchange = restTemplate.exchange(uri.toString(), HttpMethod.GET,  new HttpEntity<>(null, CONTENT_TYPE_APPLICATION_JSON), responseType);
         return exchange.getBody();
     }
 

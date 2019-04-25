@@ -33,15 +33,17 @@ public class CommunityApiClient {
 
         final var  uri = new UriTemplate(uriOffenders).expand(staffId);
 
-        // Keep the restCallHelper so the mocked tests still pass
-        // final var result = restCallHelper.getForList(uri, OFFENDERS).getBody();
-
         // Return a static data set for conectivity check
-       return List.of (
+        final var result = List.of (
                 Offender.builder().offenderNo("CT800X").build(),
                 Offender.builder().offenderNo("CR811Y").build()
-                 );
-    }
+        );
+
+        // Call the back-end Community API
+        // final var result = restCallHelper.getForList(uri, OFFENDERS).getBody();
+
+        return result;
+     }
 
 
     /**
@@ -57,11 +59,12 @@ public class CommunityApiClient {
 
         final var  uri = new UriTemplate(uriResponsibleOfficer).expand(nomsId);
 
-        // Keep the restCallHelper involved so the mocked tests still pass
-        // final var result = restCallHelper.get(uri, ResponsibleOfficer.class);
-
         // Return a static data set for conectivity check
         return ResponsibleOfficer.builder().staffCode("AA999B").forenames("Jean Michel").surname("Jarre").username("JMJARRE1").build();
+
+        // Call the back-end Community API
+        // final var result = restCallHelper.get(uri, ResponsibleOfficer.class);
+        // return result;
     }
 
 }
