@@ -20,14 +20,14 @@ public class CommunityProxyService {
     }
 
     @PreAuthorize("hasRole('ROLE_COMMUNITY')")
-    public List<Offender> getOffendersForResponsibleOfficer(@NotNull final String staffId) {
-        var offenders = communityApiClient.getOffendersForResponsibleOfficer(staffId);
+    public List<Offender> getOffendersForResponsibleOfficer(@NotNull final String staffCode) {
+        var offenders = communityApiClient.getOffendersForResponsibleOfficer(staffCode);
         return offenders;
     }
 
     @PreAuthorize("hasRole('ROLE_COMMUNITY')")
-    public ResponsibleOfficer getResponsibleOfficerForOffender(@NotNull final String nomsId) {
-        var responsibleOfficer = communityApiClient.getResponsibleOfficerForOffender(nomsId);
+    public ResponsibleOfficer getResponsibleOfficerForOffender(@NotNull final String nomsNumber) {
+        var responsibleOfficer = communityApiClient.getResponsibleOfficerForOffender(nomsNumber);
         return responsibleOfficer;
     }
 

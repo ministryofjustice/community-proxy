@@ -27,6 +27,7 @@ public class CommunityProxyServiceTest {
     @Before
     public void setup() {
         service = new CommunityProxyService(communityApiClient);
+
         offenders = List.of(
                 Offender.builder().offenderNo("IT9999").build(),
                 Offender.builder().offenderNo("IT0001").build()
@@ -39,7 +40,9 @@ public class CommunityProxyServiceTest {
     public void testGetListOfOffendersForResponsibleOfficer() {
 
         when(communityApiClient.getOffendersForResponsibleOfficer("CXF9998")).thenReturn(offenders);
+
         var result = service.getOffendersForResponsibleOfficer("CXF9998");
+
         Assertions.assertThat(result).hasSize(2);
         Assertions.assertThat(result).containsAll(offenders);
     }
@@ -48,7 +51,9 @@ public class CommunityProxyServiceTest {
     public void testGetResponsibleOfficerForOffender() {
 
         when(communityApiClient.getResponsibleOfficerForOffender("AX999")).thenReturn(responsibleOfficer);
+
         var result = service.getResponsibleOfficerForOffender("AX999");
+
         Assertions.assertThat(result.getStaffCode()).isEqualToIgnoringCase("AX999");
         Assertions.assertThat(result.getSurname()).isEqualToIgnoringCase("SMITH");
     }

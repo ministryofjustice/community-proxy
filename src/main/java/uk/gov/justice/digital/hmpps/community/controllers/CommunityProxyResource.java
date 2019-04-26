@@ -25,8 +25,8 @@ public class CommunityProxyResource {
     }
 
     @ApiOperation(
-            value = "Return list of of offenders for one responsible officer (RO)",
-            notes = "Accepts a Delius staff id for the responsible officer",
+            value = "Return list of of currently managed offenders for one responsible officer (RO)",
+            notes = "Accepts a Delius staff code for the responsible officer",
             authorizations = {@Authorization("ROLE_COMMUNITY")},
             nickname = "getOffendersForResponsibleOfficer")
     @ApiResponses(
@@ -37,15 +37,15 @@ public class CommunityProxyResource {
                     @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
                     @ApiResponse(code = 500, message = "Unrecoverable error whilst processing request.", response = ErrorResponse.class)
             })
-    @GetMapping(path = "/offenderManagers/staffCode/{staffId}/offenders")
-    public List<Offender> getOffendersForResponsibleOfficer(@ApiParam(name = "staffId", value = "Staff ID of the responsible officer", example = "CWD9898", required = true)
-                                                                                                                 @NotNull @PathVariable(value = "staffId") String staffId) {
-        return communityProxyService.getOffendersForResponsibleOfficer(staffId);
+    @GetMapping(path = "/staff/staffCode/{staffCode}/managedOffenders")
+    public List<Offender> getOffendersForResponsibleOfficer(@ApiParam(name = "staffCode", value = "Delius staff code of the responsible officer", example = "ASPD956", required = true)
+                                                                                                                 @NotNull @PathVariable(value = "staffCode") String staffCode) {
+        return communityProxyService.getOffendersForResponsibleOfficer(staffCode);
     }
 
     @ApiOperation(
             value = "Return the responsible officer (RO) for an offender",
-            notes = "Accepts a nomisId (offenderNo) in the format A9999AA",
+            notes = "Accepts a nomsNumber (offenderNo) in the format A9999AA",
             authorizations = {@Authorization("ROLE_COMMUNITY")},
             nickname = "getResponsibleOfficerForOffender")
     @ApiResponses(
@@ -56,10 +56,10 @@ public class CommunityProxyResource {
                     @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
                     @ApiResponse(code = 500, message = "Unrecoverable error whilst processing request.", response = ErrorResponse.class)
             })
-    @GetMapping(path = "/offenders/nomsNumber/{nomsId}/responsibleOfficer")
-    public ResponsibleOfficer getResponsibleOfficerForOffender(@ApiParam(name = "nomsId", value = "Nomis ID for the offender", example = "A1234BB", required = true)
-                                                            @NotNull @PathVariable(value = "nomsId") String nomsId) {
-        return communityProxyService.getResponsibleOfficerForOffender(nomsId);
+    @GetMapping(path = "/offenders/nomsNumber/{nomsNumber}/responsibleOfficers")
+    public ResponsibleOfficer getResponsibleOfficerForOffender(@ApiParam(name = "nomsNumber", value = "Noms ID for the offender", example = "A1234BB", required = true)
+                                                            @NotNull @PathVariable(value = "nomsNumber") String nomsNumber) {
+        return communityProxyService.getResponsibleOfficerForOffender(nomsNumber);
     }
 }
 

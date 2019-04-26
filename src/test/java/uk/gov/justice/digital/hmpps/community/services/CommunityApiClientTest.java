@@ -49,7 +49,7 @@ public class CommunityApiClientTest {
                 Offender.builder().offenderNo("IT0001").build()
         );
 
-        final String testUrl = "/offenderManagers/staffCode/CXF9998/offenders";
+        final String testUrl = "/staff/staffCode/CXF9998/managedOffenders";
 
         var mockResponse = new ResponseEntity<>(body, HttpStatus.OK);
 
@@ -58,9 +58,7 @@ public class CommunityApiClientTest {
         var listOfOffenders = communityApiClient.getOffendersForResponsibleOfficer("CXF9998");
 
         assertThat(listOfOffenders).hasSize(2);
-
-        // TODO: Removed for initial tests with static data
-        // assertThat(listOfOffenders).containsAll(body);
+        assertThat(listOfOffenders).containsAll(body);
 
         verify(restCallHelper).getForList(eq(new URI(testUrl)), isA(ParameterizedTypeReference.class));
         verifyNoMoreInteractions(restCallHelper);
@@ -73,7 +71,7 @@ public class CommunityApiClientTest {
         var body = ResponsibleOfficer.builder().staffCode("AX998").build();
         var response = new ResponseEntity<>(body, HttpStatus.OK);
 
-        final String testUrl = "/offenders/nomsNumber/IT0001/responsibleOfficer";
+        final String testUrl = "/offenders/nomsNumber/IT0001/responsibleOfficers";
 
         when(restCallHelper.get(new URI(testUrl),  ResponsibleOfficer.class)).thenReturn(body);
 

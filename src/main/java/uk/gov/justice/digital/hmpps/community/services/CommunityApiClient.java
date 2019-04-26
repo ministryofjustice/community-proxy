@@ -21,19 +21,19 @@ public class CommunityApiClient {
     }
 
     /**
-     *  Use the RestCallHelper to request  a list of offenders managed by the staffId provided
+     *  Use the RestCallHelper to request  a list of current offenders managed by the staffCode provided
      *
-     * @param staffId String
+     * @param staffCode String
      * @return List<Offender>
      */
 
-    public List<Offender> getOffendersForResponsibleOfficer(String staffId) {
+    public List<Offender> getOffendersForResponsibleOfficer(String staffCode) {
 
-        final var uriOffenders = "/offenderManagers/staffCode/{staffId}/offenders";
+        final var uriOffenders = "/staff/staffCode/{staffCode}/managedOffenders?current=true";
 
-        final var  uri = new UriTemplate(uriOffenders).expand(staffId);
+        final var  uri = new UriTemplate(uriOffenders).expand(staffCode);
 
-        // Return a static data set for conectivity check
+        // Return a static data set for connectivity check
         final var result = List.of (
                 Offender.builder().offenderNo("CT800X").build(),
                 Offender.builder().offenderNo("CR811Y").build()
@@ -47,19 +47,19 @@ public class CommunityApiClient {
 
 
     /**
-     *  Use the RestCallHelper to request  the responsible officer assigned to an given offender.
+     *  Use the RestCallHelper to request  the responsible officer assigned to a given offender.
      *
-     * @param nomsId String
+     * @param nomsNumber String
      * @return ResponsibleOfficer
      */
 
-    public ResponsibleOfficer getResponsibleOfficerForOffender(String nomsId) {
+    public ResponsibleOfficer getResponsibleOfficerForOffender(String nomsNumber) {
 
-        final var uriResponsibleOfficer = "/offenders/nomsNumber/{nomsId}/responsibleOfficer";
+        final var uriResponsibleOfficer = "/offenders/nomsNumber/{nomsNumber}/responsibleOfficers?current-true&latest=true";
 
-        final var  uri = new UriTemplate(uriResponsibleOfficer).expand(nomsId);
+        final var  uri = new UriTemplate(uriResponsibleOfficer).expand(nomsNumber);
 
-        // Return a static data set for conectivity check
+        // Return a static data set for connectivity check
         return ResponsibleOfficer.builder().staffCode("AA999B").forenames("Jean Michel").surname("Jarre").username("JMJARRE1").build();
 
         // Call the back-end Community API
