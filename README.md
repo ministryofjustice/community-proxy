@@ -15,7 +15,7 @@ The service offers the following endpoints:
 
 These are identical (apart from the leading "/communityapi/") to what is accepted by the real CommunityApi.
 
-# Build, test and run locally
+# Build, test, assemble the JAR and run locally
 
  $ ./gradlew clean test assemble bootRun
 
@@ -23,24 +23,53 @@ These are identical (apart from the leading "/communityapi/") to what is accepte
 
 There is a .circleci/config.yml file which defines the workflow steps.
 
+# Curl Examples
+
+Request:
+
+`curl -X GET -H "Authorization: bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6WyJyZWFkIl0sImF1dGhfc291cmNlIjoibm9uZSIsImV4cCI6MTg4MTg5MzM5MSwiYXV0aG9yaXRpZXMiOlsiUk9MRV9TWVNURU1fVVNFUiIsIlJPTEVfR0xPQkFMX1NFQVJDSCIsIlJPTEVfQ09NTVVOSVRZIiwiUk9MRV9MSUNFTkNFX1JPIl0sImp0aSI6ImMyNTdkYTMwLTUxNTgtNDM0Ni04NDNhLTU0NmE3ODA3ZjJiMiIsImNsaWVudF9pZCI6ImxpY2VuY2VzYWRtaW4ifQ.AV1qmGa8p5YkvVPCqNtHVEJ-Mse3J9CCdqYmtSz_VK8Mqdw26EJIczQSQRW3UFe5G78WST4u1GA9XQUKykxnh9dlAJpPs4p4YYEOT8MHIfmF7YCRKea-hZkU4FI_L2Rmjnfu1XOvA3LilMEWyl1QTkzjS22GLp7C9oWmfnk1pRrBiiG-kr5Q4S8jgfvje0GNBQQkFWJo7E3QlMHoH2EP9ufRgcEycNZ4qcmZ6vF_-ilcY-dDsCn9CspXPeAD8N3i7zkM-6h14T92xf0Is4AIigqNzHPBPJbDsEzz9dacgtFvepldpo_2VP2HMnDc2Zm7TLt0asgNItgR30fMPl8uFw" \
+https://community-api-t2.hmpps.dsd.io/communityapi/api/offenders/nomsNumber/888/responsibleOfficers`
+
+Response: 
+
+`{"username":"JMJARRE1","staffCode":"AA999B","forenames":"Jean Michel","surname":"Jarre"}`
+
+Request:
+
+`curl -X GET -H "Authorization: bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6WyJyZWFkIl0sImF1dGhfc291cmNlIjoibm9uZSIsImV4cCI6MTg4MTg5MzM5MSwiYXV0aG9yaXRpZXMiOlsiUk9MRV9TWVNURU1fVVNFUiIsIlJPTEVfR0xPQkFMX1NFQVJDSCIsIlJPTEVfQ09NTVVOSVRZIiwiUk9MRV9MSUNFTkNFX1JPIl0sImp0aSI6ImMyNTdkYTMwLTUxNTgtNDM0Ni04NDNhLTU0NmE3ODA3ZjJiMiIsImNsaWVudF9pZCI6ImxpY2VuY2VzYWRtaW4ifQ.AV1qmGa8p5YkvVPCqNtHVEJ-Mse3J9CCdqYmtSz_VK8Mqdw26EJIczQSQRW3UFe5G78WST4u1GA9XQUKykxnh9dlAJpPs4p4YYEOT8MHIfmF7YCRKea-hZkU4FI_L2Rmjnfu1XOvA3LilMEWyl1QTkzjS22GLp7C9oWmfnk1pRrBiiG-kr5Q4S8jgfvje0GNBQQkFWJo7E3QlMHoH2EP9ufRgcEycNZ4qcmZ6vF_-ilcY-dDsCn9CspXPeAD8N3i7zkM-6h14T92xf0Is4AIigqNzHPBPJbDsEzz9dacgtFvepldpo_2VP2HMnDc2Zm7TLt0asgNItgR30fMPl8uFw" \
+https://community-api-t2.hmpps.dsd.io/communityapi/api/staff/staffCode/888/managedOffenders`
+
+Response: 
+
+` [{"offenderNo":"CT800X"},{"offenderNo":"CR811Y"}]`
+
+
 # Properties
 
-server.port             :    8080 within the container
-community.endpoint.url  :    The URL where the community API listens e.g. https://ndseis.ad.nps.internal | oasys400.noms.gsi.gov.uk
+This following properties should be overriden by environment variables for non-local envirronments:
 
+`community.endpoint.url  :    <The URL for the community API >   ( e.g. https://oasys400.noms.gsi.gov.uk) - without the /api URI 
+jwt.public.key : <the base64-encoded public key used to verify JWT tokens received>
+`
+# The Commmunity API
 
-# Deployment
+The Community API is deployed by Tolomy and resides in a private Uk Cloud network and infrastructure.
 
-Deployment is handled manually. This sevice resides in the Fix And Go environment:
+The following URLs are used to address it: 
 
     Stage (T2) - t2pml0007   - curl -v -k https://oasys400.noms.gsi.gov.uk/api/health
     Prod       - pdpml00025  - curl -v --resolve ndseis.ad.nps.internal:443:10.162.217.15 \
                                        --cacert ndseis-ad-nps-internal.crt https://ndseis.ad.nps.internal/api/health
-    
-The proxy application is deployed in a docker container on the NDH hosts above and acts as a proxy service for the Community API.
 
-The service is temporary and will handle Oauth2 token authentication on behalf of the Community API until such time it can be altered 
-to perform this itself
+# The Community Proxy 
+    
+The proxy application is deployed in a docker container on the NDH hosts :
+
+'    Stage            :     t2pml00007
+     Production  :   pdpml00025'
+     
+The community proxy service is temporary and will handle Oauth2 token authentication on behalf of the Community API until such time as that API
+can be opened for more public access and  altered to authenticate requests itself.
 
 # Docker
 

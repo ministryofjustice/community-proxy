@@ -30,7 +30,7 @@ management:
 
 community:
   endpoint:
-     url: http://localhost:8081/api
+     url: http://localhost:8081
   api:
     uri:
       root: ${community.endpoint.url}/api
