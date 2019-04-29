@@ -8,10 +8,10 @@ the resource requested, in this case ROLE_COMMUNITY_API.
 
 The service offers the following endpoints:
 
-'''List<Offenders>   /communityapi/api/offenderManagers/staffCode/{staffId}/offenders   '''
-'''ResponsibleOfficer /communityapi/api/offenders/nomsNumber/{nomsId}/responsibleOfficer'''
-'''/communityapi/health'''
-'''/communityapi/status'''
+'List<Offenders>   /communityapi/api/staff/staffCode/{staffCode}/managedOffenders'
+'ResponsibleOfficer /communityapi/api/offenders/nomsNumber/{nomsId}/responsibleOfficers'
+'/communityapi/health'
+'/communityapi/status'
 
 These are identical (apart from the leading "/communityapi/") to what is accepted by the real CommunityApi.
 
@@ -51,6 +51,7 @@ This following properties should be overriden by environment variables for non-l
 `community.endpoint.url  :    <The URL for the community API >   ( e.g. https://oasys400.noms.gsi.gov.uk) - without the /api URI 
 jwt.public.key : <the base64-encoded public key used to verify JWT tokens received>
 `
+
 # The Commmunity API
 
 The Community API is deployed by Tolomy and resides in a private Uk Cloud network and infrastructure.
@@ -65,8 +66,8 @@ The following URLs are used to address it:
     
 The proxy application is deployed in a docker container on the NDH hosts :
 
-'    Stage            :     t2pml00007
-     Production  :   pdpml00025'
+`Stage       :   t2pml00007`
+`Production  :   pdpml00025`
      
 The community proxy service is temporary and will handle Oauth2 token authentication on behalf of the Community API until such time as that API
 can be opened for more public access and  altered to authenticate requests itself.
@@ -76,16 +77,19 @@ can be opened for more public access and  altered to authenticate requests itsel
 The Dockerfile exposes port 8080 in the container and the docker run command maps this to 8081/tcp on the docker host.
  
 To build & push the docker image to Docker Hub: 
- 
+
+` 
 $ docker build -t mojdigitalstudio/community-proxy:latest .
 $ docker login
 $ docker push mojdigitalstudio/community-proxy:latest
+`
  
 To run the container locally and expose 8081 to the local host:
   
+`
 $ docker pull mojdigitialstudio/community-proxy:latest
 $ docker run -p 8081:8080 -name "community-proxy" -d -t mojdigitalstudio/community-proxy:latest
-
+`
 
 # IntelliJ setup
 
