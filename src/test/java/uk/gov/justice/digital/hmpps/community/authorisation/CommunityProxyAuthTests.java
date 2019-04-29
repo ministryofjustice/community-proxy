@@ -1,48 +1,45 @@
 package uk.gov.justice.digital.hmpps.community.authorisation;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 import uk.gov.justice.digital.hmpps.community.model.ErrorResponse;
 import uk.gov.justice.digital.hmpps.community.model.Offender;
-import uk.gov.justice.digital.hmpps.community.model.ResponsibleOfficer;
 import uk.gov.justice.digital.hmpps.community.services.CommunityApiClient;
 import uk.gov.justice.digital.hmpps.community.services.CommunityProxyService;
 import uk.gov.justice.digital.hmpps.community.services.RestCallHelper;
 
 import java.net.URI;
-import java.net.http.HttpResponse;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest()
 @Configuration
 public class CommunityProxyAuthTests {
 
     private CommunityApiClient communityApiClient;
 
     @Autowired
-    TestRestTemplate restTemplate;
+    CommunityProxyService service;
 
     @Autowired
-    CommunityProxyService service;
+    RestTemplate restTemplate;
 
     @Value("${test.token.expired}")
     private String expiredToken;
@@ -65,8 +62,7 @@ public class CommunityProxyAuthTests {
     @Test
     public void testTokenWithNoRole() throws Exception {
 
-        final var testUrl = "/staff/staffCode/{staffCode}/managedOffenders";
-        final var staffCode = "CX9998";
+        final var testUrl = "/staff/staffCode/CX9998/managedOffenders";;
 
         try {
 
@@ -74,22 +70,20 @@ public class CommunityProxyAuthTests {
                     testUrl,
                     HttpMethod.GET,
                     createRequestEntityWithJwtToken(null, roleNotPresentToken),
-                    List.class,
-                    staffCode);
+                    List.class );
 
             assertThat(response.getBody()).isInstanceOf(ErrorResponse.class);
-            assertThat(response.getStatusCode().value()).isEqualTo(HttpStatus.UNAUTHORIZED);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
         }
         catch(Exception e) {
-            assertThat(e).isNull();
+            assertThat(e.getMessage()).contains("403 Forbidden");
         }
     }
 
      @Test
     public void testWithExpiredToken() throws Exception {
 
-         final var testUrl = "/staff/staffCode/{staffCode}/managedOffenders";
-         final var staffCode = "CX9998";
+         final var testUrl = "/staff/staffCode/CX998/managedOffenders";
 
          try {
 
@@ -97,22 +91,20 @@ public class CommunityProxyAuthTests {
                      testUrl,
                      HttpMethod.GET,
                      createRequestEntityWithJwtToken(null, expiredToken),
-                     List.class,
-                     staffCode);
+                     List.class);
 
              assertThat(response.getBody()).isInstanceOf(ErrorResponse.class);
-             assertThat(response.getStatusCode().value()).isEqualTo(HttpStatus.UNAUTHORIZED);
+             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
          }
          catch(Exception e) {
-             assertThat(e).isNull();
+             assertThat(e.getMessage()).contains("401 Unauthorized");
          }
     }
 
     @Test
     public void testWithValidToken() throws Exception {
 
-        final var testUrl = "/staff/staffCode/{staffCode}/managedOffenders";
-        final var staffCode = "CX9998";
+        var testUrl = "/staff/staffCode/CX9998/managedOffenders";
 
         // Static list of offenders for the mock
         var body = List.of(
@@ -130,14 +122,13 @@ public class CommunityProxyAuthTests {
                     testUrl,
                     HttpMethod.GET,
                     createRequestEntityWithJwtToken(null, goodToken),
-                    List.class,
-                    staffCode);
+                    List.class);
 
             assertThat(response.getBody()).isInstanceOf(List.class);
-            assertThat(response.getStatusCode().value()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         }
         catch(Exception e) {
-            assertThat(e).isNull();
+            assertThat(e.getClass()).isInstanceOf(ErrorResponse.class);
         }
     }
 
