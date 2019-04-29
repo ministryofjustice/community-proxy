@@ -39,8 +39,7 @@ public class CommunityApiClientTest {
         assertThat(true).isEqualTo(true);
     }
 
-    // @Test
-    // TODO: Re-instate this test when the canned responses are removed from the CommunityApiClient class
+    @Test
     public void testOffendersForResponsibleOfficerCall() throws Exception {
 
         // Static list of offenders for the mock
@@ -49,13 +48,13 @@ public class CommunityApiClientTest {
                 Offender.builder().offenderNo("IT0001").build()
         );
 
-        final String testUrl = "/staff/staffCode/CXF9998/managedOffenders";
+        final String testUrl = "/staff/staffCode/CX555/managedOffenders?current=true";
 
         var mockResponse = new ResponseEntity<>(body, HttpStatus.OK);
 
         when(restCallHelper.getForList(eq(new URI(testUrl)), isA(ParameterizedTypeReference.class))).thenReturn(mockResponse);
 
-        var listOfOffenders = communityApiClient.getOffendersForResponsibleOfficer("CXF9998");
+        var listOfOffenders = communityApiClient.getOffendersForResponsibleOfficer("CX555");
 
         assertThat(listOfOffenders).hasSize(2);
         assertThat(listOfOffenders).containsAll(body);
@@ -64,14 +63,13 @@ public class CommunityApiClientTest {
         verifyNoMoreInteractions(restCallHelper);
     }
 
-    // @Test
-    // TODO: Re-instate this test when the canned responses are removed from the CommunityApiClient class
+    @Test
     public void testResponsibleOfficerForOffender() throws Exception {
 
         var body = ResponsibleOfficer.builder().staffCode("AX998").build();
         var response = new ResponseEntity<>(body, HttpStatus.OK);
 
-        final String testUrl = "/offenders/nomsNumber/IT0001/responsibleOfficers";
+        final String testUrl = "/offenders/nomsNumber/IT0001/responsibleOfficers?current-true&latest=true";
 
         when(restCallHelper.get(new URI(testUrl),  ResponsibleOfficer.class)).thenReturn(body);
 

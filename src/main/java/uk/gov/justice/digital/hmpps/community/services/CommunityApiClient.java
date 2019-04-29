@@ -34,13 +34,15 @@ public class CommunityApiClient {
         final var  uri = new UriTemplate(uriOffenders).expand(staffCode);
 
         // Return a static data set for connectivity check
+        /*
         final var result = List.of (
                 Offender.builder().offenderNo("CT800X").build(),
                 Offender.builder().offenderNo("CR811Y").build()
         );
+        */
 
         // Call the back-end Community API
-        // final var result = restCallHelper.getForList(uri, OFFENDERS).getBody();
+        final var result = restCallHelper.getForList(uri, OFFENDERS).getBody();
 
         return result;
      }
@@ -60,11 +62,14 @@ public class CommunityApiClient {
         final var  uri = new UriTemplate(uriResponsibleOfficer).expand(nomsNumber);
 
         // Return a static data set for connectivity check
+        /*
         return ResponsibleOfficer.builder().staffCode("AA999B").forenames("Jean Michel").surname("Jarre").username("JMJARRE1").build();
+        */
 
         // Call the back-end Community API
-        // final var result = restCallHelper.get(uri, ResponsibleOfficer.class);
-        // return result;
+        final var result = restCallHelper.get(uri, ResponsibleOfficer.class);
+
+        return result;
     }
 
 }
