@@ -23,7 +23,7 @@ public class RestCallHelper {
         this.restTemplate = restTemplate;
     }
 
-    protected <T> ResponseEntity<T> getForList(URI uri, ParameterizedTypeReference<T> responseType) {
+    public <T> ResponseEntity<T> getForList(URI uri, ParameterizedTypeReference<T> responseType) {
         return restTemplate.exchange(uri.toString(), HttpMethod.GET, null, responseType);
     }
 

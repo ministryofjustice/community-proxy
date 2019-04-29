@@ -27,3 +27,9 @@ management:
   endpoints:
     web:
       base-path: /
+
+test:
+   token:
+    role-not-present:  <paste here>
+    expired: <paste here>
+    good: <paste here>
