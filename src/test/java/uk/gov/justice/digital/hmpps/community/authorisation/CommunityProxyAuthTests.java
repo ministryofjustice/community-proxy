@@ -71,9 +71,6 @@ public class CommunityProxyAuthTests {
                     HttpMethod.GET,
                     createRequestEntityWithJwtToken(null, roleNotPresentToken),
                     List.class );
-
-            assertThat(response.getBody()).isInstanceOf(ErrorResponse.class);
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
         }
         catch(Exception e) {
             assertThat(e.getMessage()).contains("403 Forbidden");
@@ -92,9 +89,6 @@ public class CommunityProxyAuthTests {
                      HttpMethod.GET,
                      createRequestEntityWithJwtToken(null, expiredToken),
                      List.class);
-
-             assertThat(response.getBody()).isInstanceOf(ErrorResponse.class);
-             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
          }
          catch(Exception e) {
              assertThat(e.getMessage()).contains("401 Unauthorized");
@@ -128,7 +122,7 @@ public class CommunityProxyAuthTests {
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         }
         catch(Exception e) {
-            assertThat(e.getClass()).isInstanceOf(ErrorResponse.class);
+            assertThat(e).isNotInstanceOfAny(Exception.class);
         }
     }
 
