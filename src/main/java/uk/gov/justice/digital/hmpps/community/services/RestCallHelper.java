@@ -37,4 +37,12 @@ public class RestCallHelper {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return httpHeaders;
     }
+
+    // Utility method to add the content type and JWT token to the headers
+   private HttpEntity<?> createRequestEntityWithJwtToken(final Object entity, String token) {
+        final var headers = new HttpHeaders();
+        headers.add("Authorization", "bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+       return new HttpEntity<>(entity, headers);
+    }
 }

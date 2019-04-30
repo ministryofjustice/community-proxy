@@ -43,6 +43,14 @@ Response:
 
 ` [{"offenderNo":"CT800X"},{"offenderNo":"CR811Y"}]`
 
+Request:
+
+`curl -X GET https://community-api-t2.hmpps.dsd.io/communityapi/health`
+
+Response:
+
+`{ "status":"UP"}`
+
 
 # Properties
 
@@ -84,11 +92,12 @@ $ docker login
 $ docker push mojdigitalstudio/community-proxy:latest
 `
  
-To run the container locally and expose 8081 to the local host:
+To run the container locally, expose 8081 to the local host and resolve host names use :
   
 `
 $ docker pull mojdigitialstudio/community-proxy:latest
-$ docker run -p 8081:8080 -name "community-proxy" -d -t mojdigitalstudio/community-proxy:latest
+$ docker run -p 8081:8080 --add-host=oasys400.noms.gsi.gov.uk:10.162.216.115 -name "community-proxy" -d -t mojdigitalstudio/community-proxy:latest
+$ docker run -p 8081:8080 --add-host=ndseis.xxx.xxx.xxx:999.999.999.999 -name "community-proxy" -d -t mojdigitalstudio/community-proxy:latest
 `
 
 # IntelliJ setup
