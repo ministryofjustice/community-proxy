@@ -30,21 +30,7 @@ public class CommunityApiClient {
     public List<Offender> getOffendersForResponsibleOfficer(String staffCode) {
 
         final var uriOffenders = "/staff/staffCode/{staffCode}/managedOffenders?current=true";
-
-        final var  uri = new UriTemplate(uriOffenders).expand(staffCode);
-
-        // Return a static data set for connectivity check
-        /*
-        final var result = List.of (
-                Offender.builder().offenderNo("CT800X").build(),
-                Offender.builder().offenderNo("CR811Y").build()
-        );
-        */
-
-        // Call the back-end Community API
-        final var result = restCallHelper.getForList(uri, OFFENDERS).getBody();
-
-        return result;
+        return restCallHelper.getForList(new UriTemplate(uriOffenders).expand(staffCode), OFFENDERS).getBody();
      }
 
 
@@ -58,18 +44,7 @@ public class CommunityApiClient {
     public ResponsibleOfficer getResponsibleOfficerForOffender(String nomsNumber) {
 
         final var uriResponsibleOfficer = "/offenders/nomsNumber/{nomsNumber}/responsibleOfficers?current-true&latest=true";
-
-        final var  uri = new UriTemplate(uriResponsibleOfficer).expand(nomsNumber);
-
-        // Return a static data set for connectivity check
-        /*
-        return ResponsibleOfficer.builder().staffCode("AA999B").forenames("Jean Michel").surname("Jarre").username("JMJARRE1").build();
-        */
-
-        // Call the back-end Community API
-        final var result = restCallHelper.get(uri, ResponsibleOfficer.class);
-
-        return result;
+        return restCallHelper.get(new UriTemplate(uriResponsibleOfficer).expand(nomsNumber), ResponsibleOfficer.class);
     }
 
 }

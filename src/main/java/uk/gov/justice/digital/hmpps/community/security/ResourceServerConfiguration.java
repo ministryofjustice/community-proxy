@@ -120,18 +120,12 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
         return docket;
     }
 
-    /**
-     * @return health data. Note this is unsecured so no sensitive data allowed!
-     */
     private String getVersion() {
         return buildProperties == null ? "version not available" : buildProperties.getVersion();
     }
 
     private Contact contactInfo() {
-        return new Contact(
-                "HMPPS Digital Studio",
-                "",
-                "feedback@digital.justice.gov.uk");
+        return new Contact("HMPPS Digital Studio", "", "feedback@digital.justice.gov.uk");
     }
 
     @Bean

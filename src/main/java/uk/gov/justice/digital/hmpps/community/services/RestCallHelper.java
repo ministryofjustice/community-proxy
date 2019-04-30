@@ -23,10 +23,12 @@ public class RestCallHelper {
         this.restTemplate = restTemplate;
     }
 
+    // Get for list of objects
     public <T> ResponseEntity<T> getForList(URI uri, ParameterizedTypeReference<T> responseType) {
         return restTemplate.exchange(uri.toString(), HttpMethod.GET, null, responseType);
     }
 
+    // Get for single object
     protected <T> T get(URI uri, Class<T> responseType) {
         ResponseEntity<T> exchange = restTemplate.exchange(uri.toString(), HttpMethod.GET,  new HttpEntity<>(null, CONTENT_TYPE_APPLICATION_JSON), responseType);
         return exchange.getBody();
