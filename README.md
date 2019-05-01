@@ -96,7 +96,14 @@ To run the container locally, expose 8081 to the local host and resolve host nam
   
 `
 $ docker pull mojdigitialstudio/community-proxy:latest
+$ docker run -p 8081:8080 -name "community-proxy" -d -t mojdigitalstudio/community-proxy:latest
+
+To run in staging (on t2pml0007) :
+
 $ docker run -p 8081:8080 --add-host=oasys400.noms.gsi.gov.uk:10.162.216.115 -name "community-proxy" -d -t mojdigitalstudio/community-proxy:latest
+
+In production:
+
 $ docker run -p 8081:8080 --add-host=ndseis.xxx.xxx.xxx:999.999.999.999 -name "community-proxy" -d -t mojdigitalstudio/community-proxy:latest
 `
 
