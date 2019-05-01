@@ -27,3 +27,7 @@ management:
   endpoints:
     web:
       base-path: /
+
+community:
+  api:
+    username: NationalUser

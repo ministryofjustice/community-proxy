@@ -60,15 +60,11 @@ public class RestTemplateConfiguration {
 
     @Bean
     public OAuth2RestTemplate communitySystemRestTemplate(GatewayAwareAccessTokenProvider accessTokenProvider) {
-
         OAuth2RestTemplate communitySystemRestTemplate = new OAuth2RestTemplate(communityApiDetails, oauth2ClientContext);
         List<ClientHttpRequestInterceptor> systemInterceptors = communitySystemRestTemplate.getInterceptors();
         systemInterceptors.add(new UserContextInterceptor());
-
         communitySystemRestTemplate.setAccessTokenProvider(accessTokenProvider);
-
         RootUriTemplateHandler.addTo(communitySystemRestTemplate, this.apiRootUri);
-
         return communitySystemRestTemplate;
     }
 

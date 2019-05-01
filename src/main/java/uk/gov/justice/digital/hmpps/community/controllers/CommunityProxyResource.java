@@ -3,19 +3,22 @@ package uk.gov.justice.digital.hmpps.community.controllers;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-import uk.gov.justice.digital.hmpps.community.model.Offender;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import uk.gov.justice.digital.hmpps.community.model.ErrorResponse;
+import uk.gov.justice.digital.hmpps.community.model.Offender;
 import uk.gov.justice.digital.hmpps.community.model.ResponsibleOfficer;
 import uk.gov.justice.digital.hmpps.community.services.CommunityProxyService;
-import java.util.List;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
+@Slf4j
 @Api(tags = {"community-proxy"}, authorizations = {@Authorization("ROLE_COMMUNITY")})
 @RestController
 @RequestMapping(value = "api", produces = MediaType.APPLICATION_JSON_VALUE)
-@Slf4j
 public class CommunityProxyResource {
 
     private final CommunityProxyService communityProxyService;

@@ -22,7 +22,6 @@ public class CommunityApiClient {
 
     /**
      *  Use the RestCallHelper to request  a list of current offenders managed by the staffCode provided
-     *
      * @param staffCode String
      * @return List<Offender>
      */
@@ -32,7 +31,6 @@ public class CommunityApiClient {
         final var uriOffenders = "/staff/staffCode/{staffCode}/managedOffenders?current=true";
         return restCallHelper.getForList(new UriTemplate(uriOffenders).expand(staffCode), OFFENDERS).getBody();
      }
-
 
     /**
      *  Use the RestCallHelper to request  the responsible officer assigned to a given offender.
@@ -46,5 +44,4 @@ public class CommunityApiClient {
         final var uriResponsibleOfficer = "/offenders/nomsNumber/{nomsNumber}/responsibleOfficers?current-true&latest=true";
         return restCallHelper.get(new UriTemplate(uriResponsibleOfficer).expand(nomsNumber), ResponsibleOfficer.class);
     }
-
 }

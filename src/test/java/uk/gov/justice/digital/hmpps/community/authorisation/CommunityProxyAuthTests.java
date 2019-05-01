@@ -83,7 +83,6 @@ public class CommunityProxyAuthTests {
          final var testUrl = "/staff/staffCode/CX998/managedOffenders";
 
          try {
-
              final var response = restTemplate.exchange(
                      testUrl,
                      HttpMethod.GET,
@@ -111,7 +110,6 @@ public class CommunityProxyAuthTests {
         when(restCallHelper.getForList(eq(new URI(testUrl)), isA(ParameterizedTypeReference.class))).thenReturn(mockResponse);
 
         try {
-
             final var response = restTemplate.exchange(
                     testUrl,
                     HttpMethod.GET,

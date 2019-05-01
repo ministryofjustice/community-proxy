@@ -129,7 +129,6 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     }
 
     @Bean
-    @ConfigurationProperties("communitapi.client")
     public ClientCredentialsResourceDetails communityApiClientCredentials() {
         return new ClientCredentialsResourceDetails();
     }
