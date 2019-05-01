@@ -31,3 +31,4 @@ management:
 community:
   api:
     username: NationalUser
+    password: default

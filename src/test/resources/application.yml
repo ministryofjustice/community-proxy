@@ -30,13 +30,14 @@ management:
 
 community:
   endpoint:
-     url: http://localhost:8081
+    url: http://localhost:8081/communityapi
   api:
+    username: NationalUser
+    password: default
     uri:
       root: ${community.endpoint.url}/api
-    username: NationalUser
   health:
-      uri: /api/health
+    uri: /api/health
 
 test:
    token:
