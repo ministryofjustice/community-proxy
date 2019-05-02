@@ -41,8 +41,9 @@ public class CommunityProxyResource {
                     @ApiResponse(code = 500, message = "Unrecoverable error whilst processing request.", response = ErrorResponse.class)
             })
     @GetMapping(path = "/staff/staffCode/{staffCode}/managedOffenders")
-    public List<Offender> getOffendersForResponsibleOfficer(@ApiParam(name = "staffCode", value = "Delius staff code of the responsible officer", example = "ASPD956", required = true)
-                                                                                                                 @NotNull @PathVariable(value = "staffCode") String staffCode) {
+    public List<Offender> getOffendersForResponsibleOfficer(
+            @ApiParam(name = "staffCode", value = "Delius staff code of the responsible officer", example = "ASPD956", required = true)
+            @NotNull @PathVariable(value = "staffCode") String staffCode) {
         return communityProxyService.getOffendersForResponsibleOfficer(staffCode);
     }
 
@@ -60,8 +61,9 @@ public class CommunityProxyResource {
                     @ApiResponse(code = 500, message = "Unrecoverable error whilst processing request.", response = ErrorResponse.class)
             })
     @GetMapping(path = "/offenders/nomsNumber/{nomsNumber}/responsibleOfficers")
-    public ResponsibleOfficer getResponsibleOfficerForOffender(@ApiParam(name = "nomsNumber", value = "Noms ID for the offender", example = "A1234BB", required = true)
-                                                            @NotNull @PathVariable(value = "nomsNumber") String nomsNumber) {
+    public ResponsibleOfficer getResponsibleOfficerForOffender(
+            @ApiParam(name = "nomsNumber", value = "Noms ID for the offender", example = "A1234BB", required = true)
+            @NotNull @PathVariable(value = "nomsNumber") String nomsNumber) {
         return communityProxyService.getResponsibleOfficerForOffender(nomsNumber);
     }
 }

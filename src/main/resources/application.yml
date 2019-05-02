@@ -28,7 +28,7 @@ management:
     web:
       base-path: /
 
-community:
+delius:
   api:
     username: NationalUser
     password: default

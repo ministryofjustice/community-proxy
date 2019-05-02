@@ -18,7 +18,7 @@ public class CommunityApiHealth implements HealthIndicator {
     private final RestTemplate restTemplate;
 
     @Autowired
-    public CommunityApiHealth(@Qualifier("communityApiHealthRestTemplate") RestTemplate restTemplate) {
+    public CommunityApiHealth(@Qualifier("deliusApiHealthRestTemplate") RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

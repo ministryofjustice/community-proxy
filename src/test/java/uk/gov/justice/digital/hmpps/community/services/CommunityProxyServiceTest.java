@@ -18,14 +18,15 @@ public class CommunityProxyServiceTest {
 
     private CommunityProxyService service;
 
-    private List<Offender> offenders;
-    private ResponsibleOfficer responsibleOfficer;
-
     @Mock
     private CommunityApiClient communityApiClient;
 
+    private List<Offender> offenders;
+    private ResponsibleOfficer responsibleOfficer;
+
     @Before
     public void setup() {
+
         service = new CommunityProxyService(communityApiClient);
 
         offenders = List.of(
@@ -41,7 +42,7 @@ public class CommunityProxyServiceTest {
 
         when(communityApiClient.getOffendersForResponsibleOfficer("CXF9998")).thenReturn(offenders);
 
-        var result = service.getOffendersForResponsibleOfficer("CXF9998");
+        final var result = service.getOffendersForResponsibleOfficer("CXF9998");
 
         Assertions.assertThat(result).hasSize(2);
         Assertions.assertThat(result).containsAll(offenders);
@@ -52,7 +53,7 @@ public class CommunityProxyServiceTest {
 
         when(communityApiClient.getResponsibleOfficerForOffender("AX999")).thenReturn(responsibleOfficer);
 
-        var result = service.getResponsibleOfficerForOffender("AX999");
+        final var result = service.getResponsibleOfficerForOffender("AX999");
 
         Assertions.assertThat(result.getStaffCode()).isEqualToIgnoringCase("AX999");
         Assertions.assertThat(result.getSurname()).isEqualToIgnoringCase("SMITH");

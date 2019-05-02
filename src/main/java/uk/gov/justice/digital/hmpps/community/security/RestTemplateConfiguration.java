@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.community.security;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -19,14 +20,24 @@ import uk.gov.justice.digital.hmpps.community.utils.UserContextInterceptor;
 
 import java.util.List;
 
+@Slf4j
 @Configuration
 public class RestTemplateConfiguration {
 
     private final OAuth2ClientContext oauth2ClientContext;
     private final ClientCredentialsResourceDetails communityApiDetails;
 
-    @Value("${community.api.uri.root}")
-    private String apiRootUri;
+    @Value("${proxy.endpoint.url}/communityapi/api")
+    private String proxyApiRootUri;
+
+    @Value("${delius.endpoint.url}/api")
+    private String deliusApiRootUri;
+
+    @Value("${delius.api.username}")
+    private String deliusUsername;
+
+    @Value("${delius.api.password}")
+    private String deliusPassword;
 
     @Autowired
     public RestTemplateConfiguration(
@@ -36,19 +47,38 @@ public class RestTemplateConfiguration {
         this.communityApiDetails = communityApiDetails;
     }
 
-    @Bean
+    @Bean(name = "proxyApiOauthRestTemplate")
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+        log.info("* * * Creating Proxy resource rest template with URL {}", proxyApiRootUri);
         return restTemplateBuilder
-                .rootUri(apiRootUri)
+                .rootUri(proxyApiRootUri)
                 .additionalInterceptors(getRequestInterceptors())
                 .build();
     }
 
-    @Bean(name = "communityApiHealthRestTemplate")
-    public RestTemplate communityApiHealthRestTemplate(RestTemplateBuilder restTemplateBuilder) {
+    @Bean(name = "deliusApiHealthRestTemplate")
+    public RestTemplate deliusApiHealthRestTemplate(RestTemplateBuilder restTemplateBuilder) {
+        log.info("* * * Creating Delius health rest template with URL {}", deliusApiRootUri);
         return restTemplateBuilder
-                .rootUri(apiRootUri)
+                .rootUri(deliusApiRootUri)
                 .additionalInterceptors(getRequestInterceptors())
+                .build();
+    }
+
+    @Bean(name = "deliusApiResourceRestTemplate")
+    public RestTemplate deliusApiRestTemplate(RestTemplateBuilder restTemplateBuilder) {
+        log.info("* * * Creating Delius resource rest template with URL {}", deliusApiRootUri);
+        return restTemplateBuilder
+                .rootUri(deliusApiRootUri)
+                .build();
+    }
+
+    @Bean(name = "deliusApiLogonRestTemplate")
+    public RestTemplate deliusApiLogonRestTemplate(RestTemplateBuilder restTemplateBuilder) {
+        log.info("* * * Creating Delius logon rest template with URL {}", deliusApiRootUri);
+        return restTemplateBuilder
+                .rootUri(deliusApiRootUri)
+                .basicAuthentication(deliusUsername, deliusPassword)
                 .build();
     }
 
@@ -60,11 +90,13 @@ public class RestTemplateConfiguration {
 
     @Bean
     public OAuth2RestTemplate communitySystemRestTemplate(GatewayAwareAccessTokenProvider accessTokenProvider) {
+
         OAuth2RestTemplate communitySystemRestTemplate = new OAuth2RestTemplate(communityApiDetails, oauth2ClientContext);
         List<ClientHttpRequestInterceptor> systemInterceptors = communitySystemRestTemplate.getInterceptors();
         systemInterceptors.add(new UserContextInterceptor());
         communitySystemRestTemplate.setAccessTokenProvider(accessTokenProvider);
-        RootUriTemplateHandler.addTo(communitySystemRestTemplate, this.apiRootUri);
+        RootUriTemplateHandler.addTo(communitySystemRestTemplate, this.deliusApiRootUri);
+
         return communitySystemRestTemplate;
     }
 
@@ -73,6 +105,7 @@ public class RestTemplateConfiguration {
      */
     @Component("accessTokenProvider")
     public class GatewayAwareAccessTokenProvider extends ClientCredentialsAccessTokenProvider {
+
         @Override
         public RestOperations getRestTemplate() {
             return super.getRestTemplate();

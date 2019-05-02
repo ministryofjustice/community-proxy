@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.community.services;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.digital.hmpps.community.model.Offender;
@@ -13,6 +14,7 @@ import java.util.List;
 @Slf4j
 public class CommunityProxyService {
 
+    @Autowired
     private final CommunityApiClient communityApiClient;
 
     public CommunityProxyService(CommunityApiClient communityApiClient) {

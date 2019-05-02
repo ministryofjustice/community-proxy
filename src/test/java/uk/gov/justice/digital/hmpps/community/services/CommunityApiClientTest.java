@@ -35,29 +35,21 @@ public class CommunityApiClientTest {
     }
 
     @Test
-    public void dummyTest() {
-        assertThat(true).isEqualTo(true);
-    }
+    public void testOffendersForResponsibleOfficer() throws Exception {
 
-    @Test
-    public void testOffendersForResponsibleOfficerCall() throws Exception {
-
-        // Static list of offenders for the mock
-        var body = List.of(
+        final String testUrl = "/staff/staffCode/CX555/managedOffenders?current=true";
+        final var expectedBody = List.of(
                 Offender.builder().offenderNo("IT9999").build(),
                 Offender.builder().offenderNo("IT0001").build()
         );
-
-        final String testUrl = "/staff/staffCode/CX555/managedOffenders?current=true";
-
-        var mockResponse = new ResponseEntity<>(body, HttpStatus.OK);
+        final var mockResponse = new ResponseEntity<>(expectedBody, HttpStatus.OK);
 
         when(restCallHelper.getForList(eq(new URI(testUrl)), isA(ParameterizedTypeReference.class))).thenReturn(mockResponse);
 
-        var listOfOffenders = communityApiClient.getOffendersForResponsibleOfficer("CX555");
+        final var listOfOffenders = communityApiClient.getOffendersForResponsibleOfficer("CX555");
 
         assertThat(listOfOffenders).hasSize(2);
-        assertThat(listOfOffenders).containsAll(body);
+        assertThat(listOfOffenders).containsAll(expectedBody);
 
         verify(restCallHelper).getForList(eq(new URI(testUrl)), isA(ParameterizedTypeReference.class));
         verifyNoMoreInteractions(restCallHelper);
@@ -66,19 +58,17 @@ public class CommunityApiClientTest {
     @Test
     public void testResponsibleOfficerForOffender() throws Exception {
 
-        var body = ResponsibleOfficer.builder().staffCode("AX998").build();
-        var response = new ResponseEntity<>(body, HttpStatus.OK);
-
         final String testUrl = "/offenders/nomsNumber/IT0001/responsibleOfficers?current-true&latest=true";
+        final var expectedBody = ResponsibleOfficer.builder().staffCode("AX998").build();
+        final var response = new ResponseEntity<>(expectedBody, HttpStatus.OK);
 
-        when(restCallHelper.get(new URI(testUrl),  ResponsibleOfficer.class)).thenReturn(body);
+        when(restCallHelper.get(new URI(testUrl),  ResponsibleOfficer.class)).thenReturn(expectedBody);
 
-        var responsibleOfficer = communityApiClient.getResponsibleOfficerForOffender("IT0001");
+        final var responsibleOfficer = communityApiClient.getResponsibleOfficerForOffender("IT0001");
 
-        assertThat(responsibleOfficer.getStaffCode().equalsIgnoreCase(body.getStaffCode()));
+        assertThat(responsibleOfficer.getStaffCode().equalsIgnoreCase(expectedBody.getStaffCode()));
 
         verify(restCallHelper).get(new URI(testUrl), ResponsibleOfficer.class);
         verifyNoMoreInteractions(restCallHelper);
     }
-
 }

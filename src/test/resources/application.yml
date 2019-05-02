@@ -9,7 +9,7 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS : false
 
 server:
-  port: 8081
+  port: 8082
   servlet:
     context-path: /communityapi
   use-forward-headers: true
@@ -28,16 +28,10 @@ management:
     web:
       base-path: /
 
-community:
-  endpoint:
-    url: http://localhost:8081/communityapi
+delius:
   api:
     username: NationalUser
     password: default
-    uri:
-      root: ${community.endpoint.url}/api
-  health:
-    uri: /api/health
 
 test:
    token:

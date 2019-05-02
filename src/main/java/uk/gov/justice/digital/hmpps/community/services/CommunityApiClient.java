@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.community.services;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriTemplate;
@@ -16,7 +17,9 @@ public class CommunityApiClient {
     private final RestCallHelper restCallHelper;
     private static final ParameterizedTypeReference<List<Offender>> OFFENDERS = new ParameterizedTypeReference<>() {};
 
+    @Autowired
     public CommunityApiClient(RestCallHelper restCallHelper) {
+
         this.restCallHelper = restCallHelper;
     }
 
