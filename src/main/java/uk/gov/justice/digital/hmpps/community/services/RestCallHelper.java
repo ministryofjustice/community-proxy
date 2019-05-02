@@ -1,9 +1,11 @@
 package uk.gov.justice.digital.hmpps.community.services;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.Date;
 
 @Slf4j
 @Component
@@ -130,8 +133,16 @@ public class RestCallHelper {
         return result;
     }
 
-    private boolean tokenExpired(String token) {
-        // TODO: Unwrap the token details
-        return true;
+    private boolean tokenExpired(String token) throws SignatureException {
+        boolean result = true;
+
+        Claims claims = Jwts.parser().parseClaimsJws(token).getBody();
+        Date expiry = claims.getExpiration();
+        log.info("* * * Token expiry time is : {} ", expiry.toString());
+        Date now = new Date();
+        if (expiry.after(now)) {
+            result = false;
+        }
+        return result;
     }
 }

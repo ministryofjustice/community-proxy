@@ -1,19 +1,18 @@
 # Community API proxy
 
-This API accepts and authorises requests on behalf of the Commnunity API and only forwards authenticated clients.
+This API accepts and authorises requests on behalf of the Community API and forwards only for authenticated clients.
 
-The authentication process involves checking the JWT token provided by the client as a header, checking that the token
-has the correct signature (ie. issued by the MOJ oauth2 service) and that the token contains the role that is appropriate for 
-the resource requested, in this case ROLE_COMMUNITY_API.
+The authentication process involves checking the JWT token provided by the client in the Authorization header, checking that the token
+has the correct signature (ie. issued by the MOJ oauth2 service) and containing the role ROLE_COMMUNITY.
 
 The service offers the following endpoints:
 
-'List<Offenders>   /communityapi/api/staff/staffCode/{staffCode}/managedOffenders'
-'ResponsibleOfficer /communityapi/api/offenders/nomsNumber/{nomsId}/responsibleOfficers'
+'List<Offenders>    /communityapi/api/staff/staffCode/{staffCode}/managedOffenders'
+'ResponsibleOfficer /communityapi/api/offenders/nomsNumber/{nomsId}/responsibleOfficer'
 '/communityapi/health'
 '/communityapi/status'
 
-These are identical (apart from the leading "/communityapi/") to what is accepted by the real CommunityApi.
+There is a small amount of translation done within the proxy to provide a clearer API for the client.
 
 # Build, test, assemble the JAR and run locally
 
@@ -54,11 +53,14 @@ Response:
 
 # Properties
 
-This following properties should be overriden by environment variables for non-local envirronments:
+This following properties should be overriden by environment variables for non-local environments, provided as secrets :
 
-`community.endpoint.url  :    <The URL for the community API >   ( e.g. https://oasys400.noms.gsi.gov.uk) - without the /api URI 
-jwt.public.key : <the base64-encoded public key used to verify JWT tokens received>
-`
+`JWT_PUBLIC_KEY - the base64-encoded public key of the oauth signing server for this environment     
+TRUST_STORE_PASSWORD - the password for the SSL trusted certificate store
+DELIUS_ENDPOINT_URL - the base endpoint for the Delius API(e.g https://oasys400.noms.gsi.gov.uk)
+DELIUS_USERNAME - the username to login to the Delius API and retrieve a token
+DELIUS_NAME_IP_MAP - the IP address and FQDN for the Delius API host - for non-local environments`
+
 
 # The Commmunity API
 
@@ -74,11 +76,17 @@ The following URLs are used to address it:
     
 The proxy application is deployed in a docker container on the NDH hosts :
 
-`Stage       :   t2pml00007`
-`Production  :   pdpml00025`
+`Stage       :   t2pml00007
+Production  :   pdpml00025`
      
 The community proxy service is temporary and will handle Oauth2 token authentication on behalf of the Community API until such time as that API
-can be opened for more public access and  altered to authenticate requests itself.
+can be opened for more public access to authenticate requests itself.
+
+# Stratey
+
+The aim is to keep this proxy layer very thin - to do as little mapping / translation between client and Community API such that
+when it moves to AWS the clients can consume directly with a small amount of refinement.
+
 
 # Docker
 
@@ -104,7 +112,7 @@ $ docker run -p 8081:8080 --add-host=oasys400.noms.gsi.gov.uk:10.162.216.115 -na
 
 In production:
 
-$ docker run -p 8081:8080 --add-host=ndseis.xxx.xxx.xxx:999.999.999.999 -name "community-proxy" -d -t mojdigitalstudio/community-proxy:latest
+$ docker run -p 8081:8080 --add-host=ndseis.ad.nps.internal:10.162.217.15 -name "community-proxy" -d -t mojdigitalstudio/community-proxy:latest
 `
 
 # IntelliJ setup
