@@ -1,8 +1,10 @@
 package uk.gov.justice.digital.hmpps.community.services;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.impl.DefaultJwtParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,6 +36,8 @@ public class RestCallHelper {
 
     // Cached token - renewed when required
     private String jwtToken = null;
+
+    private DefaultJwtParser parser = new DefaultJwtParser();
 
     @Autowired
     public RestCallHelper(OAuth2RestTemplate restTemplateOauth,
@@ -130,16 +134,30 @@ public class RestCallHelper {
         return result;
     }
 
-    private boolean tokenExpired(String token) throws SignatureException {
-        boolean result = true;
+    /**
+     * Convert to an unsigned token and check the expiry time
+     * @param token
+     * @return boolean true if expired or false if not
+     */
+    public boolean tokenExpired(String token) {
 
-        Claims claims = Jwts.parser().parseClaimsJws(token).getBody();
-        Date expiry = claims.getExpiration();
-        log.info("* * * Token expiry time is : {} ", expiry.toString());
-        Date now = new Date();
-        if (expiry.after(now)) {
-            result = false;
+        boolean result = true;
+        try {
+            String[] splitToken = token.split("\\.");
+            String unsignedToken = splitToken[0] + "." + splitToken[1] + ".";
+            Jwt<?,?> jwt = parser.parse(unsignedToken);
+            Claims claims = (Claims) jwt.getBody();
+            Date expiry = claims.getExpiration();
+            log.info("* * * Token expiry time is : {} ", expiry);
+            Date now = new Date();
+            if (expiry.after(now)) {
+                result = false;
+            }
         }
+        catch(Exception e) {
+            result = true;
+        }
+
         return result;
     }
 }
