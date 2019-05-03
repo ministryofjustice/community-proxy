@@ -7,22 +7,40 @@ has the correct signature (ie. issued by the MOJ oauth2 service) and containing 
 
 The service offers the following endpoints:
 
-'List<Offenders>    /communityapi/api/staff/staffCode/{staffCode}/managedOffenders'
-'ResponsibleOfficer /communityapi/api/offenders/nomsNumber/{nomsId}/responsibleOfficer'
-'/communityapi/health'
-'/communityapi/status'
+`List<Offenders> GET /communityapi/api/staff/staffCode/{staffCode}/managedOffenders`
+`ResponsibleOfficer GET /communityapi/api/offenders/nomsNumber/{nomsId}/responsibleOfficer`
+`String GET /communityapi/api/remote-status`
+`String GET /communityapi/health`
 
-There is a small amount of translation done within the proxy to provide a clearer API for the client.
+The full swagger documentation (in T2) can be found here:
 
-# Commandline Build, test and assemble
+`https://community-api-t2.hmpps.dsd.io/communityapi/swagger-ui.html`
+
+There is a small amount of translation of requests within the proxy application but generally it is a very thin layer such that
+when the Community API is migrated to a more public cloud platform the clients will be able to consume resources directly with 
+only a very small amount of rework to these requests.
+
+# Tools Used
+
+`Oracle Java JDK v11.x.x`
+`Gradle v.5.x.x`
+`Lombok 1.18.x`
+`SpringBoot v.2.11`
+`Mockito`
+`Docker v18.x`
+`CircleCI v2.x`
+`Spring Security`
+`Swagger 2.9.x`
+
+# Commandline build, test and assemble
 
  `$ ./gradlew clean test assemble`
 
 # Pipeline
 
-There is a .circleci/config.yml file which defines the workflow steps.
+There is a .circleci/config.yml file which defines the workflow steps tracking the master branch in GitHub.
 
-# Curl Examples
+# Curl Examples (environment-specific)
 
 Request (T2 only):
 
@@ -51,29 +69,40 @@ Response:
 `{ "status":"UP"}`
 
 
-# Property Secrets to Override
+# Properties to Override in non-local Environments
 
-This following properties should be overriden by environment variables for non-local environments :
-
- The base64-encoded public key of the oauth signing server for this environment:
+The base64-encoded public key of the oauth signing server for this environment:
  
-`JWT_PUBLIC_KEY`
+`JWT_PUBLIC_KEY=X4H4H4H3h3...` (the public key of the token provider in the environment) 
  
  The password for the SSL trusted certificate store:
  
-`TRUST_STORE_PASSWORD`
+`TRUST_STORE_PASSWORD=secret` (the password to use for the SSL trust store)
 
  The base endpoint for the Delius API(e.g https://oasys400.noms.gsi.gov.uk):
 
-`DELIUS_ENDPOINT_URL`
+`DELIUS_ENDPOINT_URL=https://host:port`
 
  The username to login to the Delius API and retrieve a token:
 
-`DELIUS_USERNAME`
+`DELIUS_USERNAME=DeliusAdminUserName`
 
- The IP address and FQDN for the Delius API host - for non-local environments:
+ The FQDN, port and IP address for the Delius API host (used in the docker run command):
 
-`DELIUS_NAME_IP_MAP`
+`DELIUS_NAME_IP_MAP=ndseis.ad.nps.internal:443:10.162.217.15`
+
+
+# Trusted Certificates
+
+The docker images is built to contain a trust store that is populated with the certificates
+which will be trusted by the proxy. At present this contains the current X.509 certificates
+for two environments.
+
+When these certificates change the keystore will need to be updated with the new host, intermediate 
+or CA root certificates as appropriate.
+
+There is a script in the ${project-root}/keystores directory for recreating this keystore The 
+docker build process will ensure it is included in the image produced.
 
 
 # The Commmunity API
@@ -87,15 +116,9 @@ The following URLs are provided :
                                        --cacert ndseis-ad-nps-internal.crt https://ndseis.ad.nps.internal/api/health`
      
 
-# Strategy
-
-The aim is to keep this proxy layer very thin - to do as little mapping / translation between client and Community API such that
-when it is migrated to AWS or Cloud platform the clients can consume directly with just a small amount of refactoring.
-
-
 # Docker
 
-The Dockerfile exposes port 8080 in the container and the docker run command maps this to 8081/tcp on the docker host.
+The application listens on port 8080 within the container and the docker run command maps this to 8081/tcp on the host.
  
 To build & push the docker image to Docker Hub: 
 
