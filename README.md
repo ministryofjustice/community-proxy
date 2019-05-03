@@ -23,6 +23,10 @@ There is a small amount of translation of requests within the proxy application 
 when the Community API is migrated to a more public cloud platform the clients will be able to consume resources directly with 
 only a very small amount of rework to these requests.
 
+# Overview Diagram
+
+![Overview diagram](./HDC-to-Community-API.png)
+
 # Tools Used
 
 `Oracle Java JDK v11.x.x`
