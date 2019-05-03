@@ -8,8 +8,11 @@ has the correct signature (ie. issued by the MOJ oauth2 service) and containing 
 The service offers the following endpoints:
 
 `List<Offenders> GET /communityapi/api/staff/staffCode/{staffCode}/managedOffenders`
+
 `ResponsibleOfficer GET /communityapi/api/offenders/nomsNumber/{nomsId}/responsibleOfficer`
+
 `String GET /communityapi/api/remote-status`
+
 `String GET /communityapi/health`
 
 The full swagger documentation (in T2) can be found here:
@@ -110,10 +113,10 @@ docker build process will ensure it is included in the image produced.
 The Community API is deployed by Tolomy and resides in a private Uk Cloud network and infrastructure.
 The following URLs are provided : 
 
-    `Stage (T2) - t2pml0007   - curl -v -k https://oasys400.noms.gsi.gov.uk/api/health`
+`From t2pml0007 (stage env) : $ curl -v -k https://oasys400.noms.gsi.gov.uk/api/health`
     
-    `Prod       - pdpml00025  - curl -v --resolve ndseis.ad.nps.internal:443:10.162.217.15 \
-                                       --cacert ndseis-ad-nps-internal.crt https://ndseis.ad.nps.internal/api/health`
+`From pdpml00025 (production) : $curl -v --resolve ndseis.ad.nps.internal:443:10.162.217.15 \
+                                      --cacert ndseis-ad-nps-internal.crt https://ndseis.ad.nps.internal/api/health`
      
 
 # Docker
@@ -123,12 +126,15 @@ The application listens on port 8080 within the container and the docker run com
 To build & push the docker image to Docker Hub: 
 
 `$ docker build -t mojdigitalstudio/community-proxy:latest .`
+
 `$ docker login`
+
 `$ docker push mojdigitalstudio/community-proxy:latest`
  
 To run the container locally, expose 8081 to the local host and resolve host names use :
   
 `$ docker pull mojdigitialstudio/community-proxy:latest`
+
 `$ docker run -p 8081:8080 -name "community-proxy" -d -t mojdigitalstudio/community-proxy:latest`
 
 To run in staging (on t2pml0007) :
