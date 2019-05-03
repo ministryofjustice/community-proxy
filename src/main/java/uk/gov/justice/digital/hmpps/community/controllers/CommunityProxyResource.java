@@ -66,5 +66,23 @@ public class CommunityProxyResource {
             @NotNull @PathVariable(value = "nomsNumber") String nomsNumber) {
         return communityProxyService.getResponsibleOfficerForOffender(nomsNumber);
     }
+
+    @ApiOperation(
+            value = "Return the status info from the Delius Community API",
+            notes = "Checks end-to-end communication",
+            authorizations = {@Authorization("ROLE_COMMUNITY")},
+            nickname = "getRemoteStatus")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "OK", response = String.class),
+                    @ApiResponse(code = 400, message = "Invalid request", response = ErrorResponse.class),
+                    @ApiResponse(code = 401, message = "Unauthorised", response = ErrorResponse.class),
+                    @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
+                    @ApiResponse(code = 500, message = "Unrecoverable error", response = ErrorResponse.class)
+            })
+    @GetMapping(path = "/remote-status")
+    public String getRemoteStatus() {
+        return communityProxyService.getRemoteStatus();
+    }
 }
 

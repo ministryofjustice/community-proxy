@@ -33,4 +33,9 @@ public class CommunityProxyService {
         return responsibleOfficer;
     }
 
+    @PreAuthorize("hasRole('ROLE_COMMUNITY')")
+    public String getRemoteStatus() {
+        var statusString = communityApiClient.getRemoteStatus();
+        return statusString;
+    }
 }

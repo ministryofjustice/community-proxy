@@ -19,14 +19,17 @@ import java.util.Date;
 @Component
 public class RestCallHelper {
 
-    // An Oauth2RestTemplate for future use (contains calling client details, token, roles etc)
-    // restTemplateOauth.getOAuth2ClientContext().getAccessToken().getAdditionalInformation();
+    /*
+     * An Oauth2RestTemplate for future use (contains calling client details, token, roles etc)
+     * For example, to get details of the calling user/client where logon to the Community API is a specific user.
+     * restTemplateOauth.getOAuth2ClientContext().getAccessToken().getAdditionalInformation();
+     */
     private final OAuth2RestTemplate restTemplateOauth;
 
-    // Pre-configured with basic authentication headers for logon & token retrieval
+    // Pre-configured with basic authentication headers & URL for logon & token retrieval
     private RestTemplate restTemplateLogon;
 
-    // Pre-configured with JWT bearer token headers for accessing Delius API resources
+    // Pre-configured with URL for accessing Delius API resources
     private RestTemplate restTemplateResource;
 
     // Cached token - renewed when required
@@ -71,8 +74,7 @@ public class RestCallHelper {
     }
 
     /**
-     * Check the cached token and renew if necessary.
-     * Synchronized so two client request don't renew simultaneously
+     * Synchronized so two client requests don't renew simultaneously
      */
     private synchronized void checkForCachedTokenRenewal() {
         if (invalidToken(jwtToken)) {
@@ -83,7 +85,7 @@ public class RestCallHelper {
     }
 
     /**
-     * Perform a logon request with the Community API and retrieve a token using pre-configured restTemplate
+     * Perform a logon request with the Community API and retrieve a token using pre-configured restTemplate* .
      * @return String token
      */
     private String renewCachedToken() {
@@ -109,7 +111,7 @@ public class RestCallHelper {
     /**
      * Build a HttpEntity with appropriate headers for a resource request to the community API
      * @param entity The object being wrapped in a HttpEntity
-     * @param jwtToken The JWT token received from a logon request
+     * @param jwtToken The JWT token received from a prior logon request
      * @return HttpEntity<T> requestEntity
      */
    private HttpEntity<?> getResourceRequestEntity(Object entity, String jwtToken) {
@@ -119,11 +121,6 @@ public class RestCallHelper {
         return new HttpEntity<>(entity, headers);
     }
 
-    /**
-     * Check for an invalid token - either null or expired
-     * @param token
-     * @return boolean true if token is null or invalid
-     */
     private boolean invalidToken(String token) {
         boolean result = false;
         if (token == null || tokenExpired(token)) {
