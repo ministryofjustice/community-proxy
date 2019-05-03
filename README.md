@@ -76,11 +76,11 @@ Response:
 
 The base64-encoded public key of the oauth signing server for this environment:
  
-`JWT_PUBLIC_KEY=X4H4H4H3h3...` (the public key of the token provider in the environment) 
+`JWT_PUBLIC_KEY=X4H4H4H3h3...` 
  
  The password for the SSL trusted certificate store:
  
-`TRUST_STORE_PASSWORD=secret` (the password to use for the SSL trust store)
+`TRUST_STORE_PASSWORD=secret` 
 
  The base endpoint for the Delius API(e.g https://oasys400.noms.gsi.gov.uk):
 
@@ -98,20 +98,21 @@ The base64-encoded public key of the oauth signing server for this environment:
 # Trusted Certificates
 
 The docker images is built to contain a trust store that is populated with the certificates
-which will be trusted by the proxy. At present this contains the current X.509 certificates
-for two environments.
+which will be trusted by the proxy for forward HTTPS connections. At present this contains the current 
+X.509 certificates for two planned environments T2 and PRODUCTION.
 
-When these certificates change the keystore will need to be updated with the new host, intermediate 
-or CA root certificates as appropriate.
+When these certificates change the keystore will need to be updated either with the new host, intermediate 
+or CA root certificates as advised by Tolomy.
 
-There is a script in the ${project-root}/keystores directory for recreating this keystore The 
-docker build process will ensure it is included in the image produced.
+There is a script in the ${project-root}/keystores directory for recreating this keystore and the 
+Dockerfile will ensure it is included in the image.
 
 
 # The Commmunity API
 
-The Community API is deployed by Tolomy and resides in a private Uk Cloud network and infrastructure.
-The following URLs are provided : 
+The Community API is deployed by Tolomy and resides in a private UK Cloud network and infrastructure.
+
+The following URLs have been provided to us, accessible only from these source IPs / hosts : 
 
 `From t2pml0007 (stage env) : $ curl -v -k https://oasys400.noms.gsi.gov.uk/api/health`
     
@@ -154,4 +155,3 @@ In production:
 - Enable the lombok plugin in IntelliJ and restart
 - Enable annotation Processing at "Settings > Build > Compiler > Annotation Processors"
 - Ensure commandline and IntelliJ build project and pass all tests
-
