@@ -33,7 +33,7 @@ public class CommunityApiClient {
     }
 
     public String getRemoteStatus() {
-        final var uriRemoteStatus = "/status";
+        final var uriRemoteStatus = "/health";
         return restCallHelper.get(new UriTemplate(uriRemoteStatus).expand(), String.class);
     }
 }

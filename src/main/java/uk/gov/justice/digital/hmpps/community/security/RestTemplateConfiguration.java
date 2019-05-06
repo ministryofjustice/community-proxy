@@ -27,10 +27,10 @@ public class RestTemplateConfiguration {
     private final OAuth2ClientContext oauth2ClientContext;
     private final ClientCredentialsResourceDetails communityApiDetails;
 
-    @Value("${proxy.endpoint.url}/communityapi/api")
+    @Value("${proxy.endpoint.url}")
     private String proxyApiRootUri;
 
-    @Value("${delius.endpoint.url}/api")
+    @Value("${delius.endpoint.url}")
     private String deliusApiRootUri;
 
     @Value("${delius.api.username}")

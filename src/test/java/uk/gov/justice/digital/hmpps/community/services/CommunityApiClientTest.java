@@ -71,4 +71,6 @@ public class CommunityApiClientTest {
         verify(restCallHelper).get(new URI(testUrl), ResponsibleOfficer.class);
         verifyNoMoreInteractions(restCallHelper);
     }
+
+    // TODO: Add test for call to health endpoint
 }

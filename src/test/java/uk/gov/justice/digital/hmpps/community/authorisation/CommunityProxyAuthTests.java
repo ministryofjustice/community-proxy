@@ -61,7 +61,8 @@ public class CommunityProxyAuthTests {
     @Test
     public void testTokenWithNoRole() throws Exception {
 
-        final var testUrl = "/staff/staffCode/CX9998/managedOffenders";
+        // Proxy endpoint (needs /api)
+        final var testUrl = "/api/staff/staffCode/CX9998/managedOffenders";
 
         try {
 
@@ -79,7 +80,8 @@ public class CommunityProxyAuthTests {
     @Test
     public void testWithExpiredToken() throws Exception {
 
-        final var testUrl = "/staff/staffCode/CX9998/managedOffenders";
+        // Proxy endpoint (needs /api)
+        final var testUrl = "/api/staff/staffCode/CX9998/managedOffenders";
 
         try {
              final var response = restTemplate.exchange(
@@ -97,7 +99,9 @@ public class CommunityProxyAuthTests {
     public void testWithValidToken() throws Exception {
 
         var staffCode = "CX9998";
-        var testUrl = "/staff/staffCode/" + staffCode + "/managedOffenders";
+
+        // Proxy endpoint (needs /api)
+        var testUrl = "/api/staff/staffCode/" + staffCode + "/managedOffenders";
 
         // Mocked response in place of the Delius API connection being established
         var expectedBody = List.of(

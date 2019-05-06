@@ -93,21 +93,19 @@ public class RestCallHelper {
      * @return String token
      */
     private String renewCachedToken() {
-        // final var entity = getLogonRequestEntity(null, deliusUsername, deliusPassword);
-        ResponseEntity<String> exchange =  restTemplateLogon.exchange("/logon", HttpMethod.POST, null, String.class);
+        final var entity = getLogonRequestEntity("NationalUser");
+        ResponseEntity<String> exchange =  restTemplateLogon.exchange("/logon", HttpMethod.POST, entity, String.class);
         return exchange.getBody();
     }
 
     /**
      * Build HttpEntity with appropriate headers for a logon request to the community API
      * @param entity The object being wrapped in a HttpEntity
-     * @param username The delius API username
-     * @param password The delius API password
      * @return HttpEntity<T> requestEntity
      */
-    private HttpEntity<?> getLogonRequestEntity(Object entity, final String username, final String password) {
+    private HttpEntity<?> getLogonRequestEntity(Object entity) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(username, password);
+        // headers.setBasicAuth(username, password);
         headers.setContentType(MediaType.TEXT_PLAIN);
         return new HttpEntity<>(entity, headers);
     }
