@@ -28,28 +28,23 @@ public class RestCallHelper {
      */
     private final OAuth2RestTemplate restTemplateOauth;
 
-    // Pre-configured with Delius username (from properties) and expected content type headers
-    private HttpEntity<String> deliusLogonEntity;
-
     // Pre-configured with URL for accessing Delius API resources
     private RestTemplate restTemplateResource;
 
-    // Cached token - renewed when required
-    private String jwtToken = null;
+    private CommunityApiTokenService tokenService;
 
-    private DefaultJwtParser parser = new DefaultJwtParser();
 
     @Autowired
     public RestCallHelper(OAuth2RestTemplate restTemplateOauth,
-                          @Qualifier("deliusApiLogonEntity") HttpEntity<String> deliusLogonEntity,
-                          @Qualifier("deliusApiResourceRestTemplate") RestTemplate restTemplateResource) {
+                          @Qualifier("deliusApiResourceRestTemplate") RestTemplate restTemplateResource,
+                          CommunityApiTokenService tokenService) {
 
         // For future use - when Delius API is altered to Oauth2
         this.restTemplateOauth = restTemplateOauth;
 
         // For current use
-        this.deliusLogonEntity = deliusLogonEntity;
         this.restTemplateResource = restTemplateResource;
+        this.tokenService = tokenService;
     }
 
     /**
@@ -59,9 +54,9 @@ public class RestCallHelper {
      * @return An list of objects of Class <T>
      */
     public <T> ResponseEntity<T> getForList(URI uri, ParameterizedTypeReference<T> responseType) {
-        checkForCachedTokenRenewal();
-        final var entity = getResourceRequestEntity(null, jwtToken);
-        return restTemplateResource.exchange(uri.toString(), HttpMethod.GET, entity, responseType);
+
+        tokenService.checkOrRenew();
+        return restTemplateResource.exchange(uri.toString(), HttpMethod.GET, tokenService.getTokenEnabledRequestEntity(null), responseType);
     }
 
     /**
@@ -71,78 +66,8 @@ public class RestCallHelper {
      * @return An object of type T
      */
     protected <T> T get(URI uri, Class<T> responseType) {
-        checkForCachedTokenRenewal();
-        final var entity = getResourceRequestEntity(null, jwtToken);
-        ResponseEntity<T> exchange = restTemplateResource.exchange(uri.toString(), HttpMethod.GET,  entity, responseType);
+        tokenService.checkOrRenew();
+        ResponseEntity<T> exchange = restTemplateResource.exchange(uri.toString(), HttpMethod.GET, tokenService.getTokenEnabledRequestEntity(null), responseType);
         return exchange.getBody();
-    }
-
-    /**
-     * Synchronized so two client requests don't renew simultaneously
-     */
-    private synchronized void checkForCachedTokenRenewal() {
-        if (invalidToken(jwtToken)) {
-            log.info("* * * Invalid token - renewing ... ");
-            jwtToken = renewCachedToken();
-            log.info("* * * New token obtained {}", jwtToken);
-        }
-    }
-
-    /**
-     * Perform a logon request with the Community API and retrieve a token using pre-configured bean containing the Delivus username.
-     * @return String token
-     */
-    private String renewCachedToken() {
-        ResponseEntity<String> exchange =  restTemplateResource.exchange("/logon", HttpMethod.POST, deliusLogonEntity, String.class);
-        return exchange.getBody();
-    }
-
-    /**
-     * Build a HttpEntity with appropriate headers for a resource request to the community API
-     * @param entity The object being wrapped in a HttpEntity
-     * @param jwtToken The JWT token received from a prior logon request
-     * @return HttpEntity<T> requestEntity
-     */
-   private HttpEntity<?> getResourceRequestEntity(Object entity, String jwtToken) {
-        final var headers = new HttpHeaders();
-        headers.setBearerAuth(jwtToken);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        return new HttpEntity<>(entity, headers);
-    }
-
-    private boolean invalidToken(String token) {
-        boolean result = false;
-        if (token == null || tokenExpired(token)) {
-            log.info("* * * Null or expired token - will renew it..");
-            result = true;
-        }
-        return result;
-    }
-
-    /**
-     * Convert to an unsigned token and check the expiry time
-     * @param token
-     * @return boolean true if expired or false if not
-     */
-    public boolean tokenExpired(String token) {
-
-        boolean result = true;
-        try {
-            String[] splitToken = token.split("\\.");
-            String unsignedToken = splitToken[0] + "." + splitToken[1] + ".";
-            Jwt<?,?> jwt = parser.parse(unsignedToken);
-            Claims claims = (Claims) jwt.getBody();
-            Date expiry = claims.getExpiration();
-            log.info("* * * Token expiry time is : {} ", expiry);
-            Date now = new Date();
-            if (expiry.after(now)) {
-                result = false;
-            }
-        }
-        catch(Exception e) {
-            log.info("Exception during token check for {} - msg {}", token, e.getMessage());
-        }
-
-        return result;
     }
 }
