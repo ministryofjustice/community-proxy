@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.community.services;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.impl.DefaultJwtParser;
 import lombok.extern.slf4j.Slf4j;
@@ -41,52 +42,52 @@ public class CommunityApiTokenService {
     public void checkOrRenew() {
 
         if (jwtToken == null || isTokenExpired()) {
-            jwtToken = renewCachedToken();
-            log.info("* * * Renewed token is {}", jwtToken);
+            renewCachedToken();
         }
     }
 
-    private synchronized String renewCachedToken() {
+    private synchronized void renewCachedToken() {
 
-        ResponseEntity<String> exchange =  restTemplateResource.exchange("/logon", HttpMethod.POST, deliusLogonEntity, String.class);
-        return exchange.getBody();
+        try {
+            ResponseEntity<String> exchange = restTemplateResource.exchange("/logon", HttpMethod.POST, deliusLogonEntity, String.class);
+            jwtToken = exchange.getBody();
+            log.info("* * * Renewed token is {}", jwtToken);
+        }
+        catch(Exception e) {
+            log.error("* * * Exception renewing Delius API token {} ", e.getMessage());
+        }
     }
 
     public boolean isTokenExpired() {
 
         boolean result = true;
 
-        try {
-            Date expiry = getExpiryDate();
+        final var expiry = getExpiryDate();
+        if (expiry != null) {
             log.info("* * * Token expiry time is : {} ", expiry);
-            Date now = new Date();
+            final var now = new Date();
             if (expiry != null && expiry.after(now)) {
                 result = false;
             }
         }
-        catch(Exception e) {
-            log.info("* * * Exception getting token expiry date {} ", e.getMessage());
-        }
-
         return result;
     }
 
     public Date getExpiryDate() {
 
         try {
-            // Convert to an unsigned token to extract the claims
+            // Convert to an unsigned token to extract the claims without the signing key
             String[] splitToken = jwtToken.split("\\.");
             String unsignedToken = splitToken[0] + "." + splitToken[1] + ".";
             Jwt<?,?> jwt = parser.parse(unsignedToken);
             Claims claims = (Claims) jwt.getBody();
             return claims.getExpiration();
         }
-        catch(io.jsonwebtoken.ExpiredJwtException exp) {
+        catch(ExpiredJwtException exp) {
             log.info("Token expired {} - msg {}", jwtToken, exp.getMessage());
-            return null;
         }
         catch(Exception e) {
-            log.info("Exception during token check for {} - msg {}", jwtToken, e.getMessage());
+            log.info("Exception during token check {} - msg {}", jwtToken, e.getMessage());
         }
 
         return null;
