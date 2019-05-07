@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpEntity;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,7 +18,7 @@ public class TokenCheckTest {
    RestCallHelper restCallHelper;
 
    @Mock OAuth2RestTemplate oauthTemplate;
-   @Mock RestTemplate restTemplateLogon;
+   @Mock HttpEntity<String> deliusLogonEntity;
    @Mock RestTemplate restTemplateResource;
 
    // TODO: Make this a very long-life token - currently expires in May 2019
@@ -31,7 +32,7 @@ public class TokenCheckTest {
     @Test
     public void testTokenClaims() throws Exception {
 
-        RestCallHelper restCallHelper = new RestCallHelper(oauthTemplate, restTemplateLogon, restTemplateResource);
+        RestCallHelper restCallHelper = new RestCallHelper(oauthTemplate, deliusLogonEntity , restTemplateResource);
 
         try {
             boolean expired = restCallHelper.tokenExpired(testToken);

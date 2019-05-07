@@ -31,4 +31,3 @@ management:
 delius:
   api:
     username: NationalUser
-    password: default

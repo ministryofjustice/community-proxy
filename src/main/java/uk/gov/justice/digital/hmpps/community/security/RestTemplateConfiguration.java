@@ -7,6 +7,9 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.client.RootUriTemplateHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -35,9 +38,6 @@ public class RestTemplateConfiguration {
 
     @Value("${delius.api.username}")
     private String deliusUsername;
-
-    @Value("${delius.api.password}")
-    private String deliusPassword;
 
     @Autowired
     public RestTemplateConfiguration(
@@ -73,13 +73,12 @@ public class RestTemplateConfiguration {
                 .build();
     }
 
-    @Bean(name = "deliusApiLogonRestTemplate")
-    public RestTemplate deliusApiLogonRestTemplate(RestTemplateBuilder restTemplateBuilder) {
-        log.info("* * * Creating Delius logon rest template with URL {}", deliusApiRootUri);
-        return restTemplateBuilder
-                .rootUri(deliusApiRootUri)
-                .basicAuthentication(deliusUsername, deliusPassword)
-                .build();
+    @Bean(name = "deliusApiLogonEntity")
+    public HttpEntity<String> deliusApiLogonEntity() {
+        String postBody = deliusUsername;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        return new HttpEntity<>(deliusUsername, headers);
     }
 
     private List<ClientHttpRequestInterceptor> getRequestInterceptors() {

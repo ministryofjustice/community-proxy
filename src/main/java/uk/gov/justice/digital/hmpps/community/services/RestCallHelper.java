@@ -22,14 +22,14 @@ import java.util.Date;
 public class RestCallHelper {
 
     /*
-     * An Oauth2RestTemplate for future use (contains calling client details, token, roles etc)
+     * An Oauth2RestTemplate for future use (contains calling client context including token, roles etc)
      * For example, to get details of the calling user/client where logon to the Community API is a specific user.
      * restTemplateOauth.getOAuth2ClientContext().getAccessToken().getAdditionalInformation();
      */
     private final OAuth2RestTemplate restTemplateOauth;
 
-    // Pre-configured with basic authentication headers & URL for logon & token retrieval
-    private RestTemplate restTemplateLogon;
+    // Pre-configured with Delius username (from properties) and expected content type headers
+    private HttpEntity<String> deliusLogonEntity;
 
     // Pre-configured with URL for accessing Delius API resources
     private RestTemplate restTemplateResource;
@@ -41,14 +41,14 @@ public class RestCallHelper {
 
     @Autowired
     public RestCallHelper(OAuth2RestTemplate restTemplateOauth,
-                          @Qualifier("deliusApiLogonRestTemplate") RestTemplate restTemplateLogon,
+                          @Qualifier("deliusApiLogonEntity") HttpEntity<String> deliusLogonEntity,
                           @Qualifier("deliusApiResourceRestTemplate") RestTemplate restTemplateResource) {
 
         // For future use - when Delius API is altered to Oauth2
         this.restTemplateOauth = restTemplateOauth;
 
         // For current use
-        this.restTemplateLogon = restTemplateLogon;
+        this.deliusLogonEntity = deliusLogonEntity;
         this.restTemplateResource = restTemplateResource;
     }
 
@@ -89,25 +89,12 @@ public class RestCallHelper {
     }
 
     /**
-     * Perform a logon request with the Community API and retrieve a token using pre-configured restTemplate* .
+     * Perform a logon request with the Community API and retrieve a token using pre-configured bean containing the Delivus username.
      * @return String token
      */
     private String renewCachedToken() {
-        final var entity = getLogonRequestEntity("NationalUser");
-        ResponseEntity<String> exchange =  restTemplateLogon.exchange("/logon", HttpMethod.POST, entity, String.class);
+        ResponseEntity<String> exchange =  restTemplateResource.exchange("/logon", HttpMethod.POST, deliusLogonEntity, String.class);
         return exchange.getBody();
-    }
-
-    /**
-     * Build HttpEntity with appropriate headers for a logon request to the community API
-     * @param entity The object being wrapped in a HttpEntity
-     * @return HttpEntity<T> requestEntity
-     */
-    private HttpEntity<?> getLogonRequestEntity(Object entity) {
-        HttpHeaders headers = new HttpHeaders();
-        // headers.setBasicAuth(username, password);
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        return new HttpEntity<>(entity, headers);
     }
 
     /**
@@ -153,7 +140,7 @@ public class RestCallHelper {
             }
         }
         catch(Exception e) {
-            result = true;
+            log.info("Exception during token check for {} - msg {}", token, e.getMessage());
         }
 
         return result;
