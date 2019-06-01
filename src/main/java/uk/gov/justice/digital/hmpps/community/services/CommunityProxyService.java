@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.digital.hmpps.community.model.Offender;
+import uk.gov.justice.digital.hmpps.community.model.ManagedOffender;
 import uk.gov.justice.digital.hmpps.community.model.ResponsibleOfficer;
 
 import javax.validation.constraints.NotNull;
@@ -22,20 +22,17 @@ public class CommunityProxyService {
     }
 
     @PreAuthorize("hasRole('ROLE_COMMUNITY')")
-    public List<Offender> getOffendersForResponsibleOfficer(@NotNull final String staffCode) {
-        var offenders = communityApiClient.getOffendersForResponsibleOfficer(staffCode);
-        return offenders;
+    public List<ManagedOffender> getOffendersForResponsibleOfficer(@NotNull final String staffCode) {
+        return communityApiClient.getOffendersForResponsibleOfficer(staffCode);
     }
 
     @PreAuthorize("hasRole('ROLE_COMMUNITY')")
-    public ResponsibleOfficer getResponsibleOfficerForOffender(@NotNull final String nomsNumber) {
-        var responsibleOfficer = communityApiClient.getResponsibleOfficerForOffender(nomsNumber);
-        return responsibleOfficer;
+    public List<ResponsibleOfficer> getResponsibleOfficersForOffender(@NotNull final String nomsNumber) {
+        return communityApiClient.getResponsibleOfficersForOffender(nomsNumber);
     }
 
     @PreAuthorize("hasRole('ROLE_COMMUNITY')")
     public String getRemoteStatus() {
-        var statusString = communityApiClient.getRemoteStatus();
-        return statusString;
+        return communityApiClient.getRemoteStatus();
     }
 }

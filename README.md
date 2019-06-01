@@ -9,7 +9,7 @@ The service offers the following endpoints:
 
 `List<Offenders> GET /communityapi/api/staff/staffCode/{staffCode}/managedOffenders`
 
-`ResponsibleOfficer GET /communityapi/api/offenders/nomsNumber/{nomsId}/responsibleOfficer`
+`List<ResponsibleOfficer> GET /communityapi/api/offenders/nomsNumber/{nomsId}/responsibleOfficers`
 
 `String GET /communityapi/api/remote-status`
 
@@ -22,6 +22,10 @@ The full swagger documentation (in T2) can be found here:
 There is a small amount of translation of requests within the proxy application but generally it is a very thin layer such that
 when the Community API is migrated to a more public cloud platform the clients will be able to consume resources directly with 
 only a very small amount of rework to these requests.
+
+The only translation done is the addition of a query parameter `?current=true` to both endpoints when forwarding to the 
+Community API.
+
 
 # Overview Diagram
 
@@ -56,7 +60,12 @@ https://community-api-t2.hmpps.dsd.io/communityapi/api/offenders/nomsNumber/888/
 
 Response: 
 
-`{"username":"JMJARRE1","staffCode":"AA999B","forenames":"Jean Michel","surname":"Jarre"}`
+`List<ManagedOffeder>`
+
+or 
+
+`ErrorResponse`
+
 
 Request (T2 only):
 
@@ -65,7 +74,11 @@ https://community-api-t2.hmpps.dsd.io/communityapi/api/staff/staffCode/888/manag
 
 Response: 
 
-` [{"offenderNo":"CT800X"},{"offenderNo":"CR811Y"}]`
+`List<ResponsibleOfficer>`
+
+or 
+
+`ErrorResponse`
 
 Request (T2 only):
 
@@ -116,7 +129,7 @@ Dockerfile will ensure it is included in the image.
 
 The Community API is deployed by Tolomy and resides in a private UK Cloud network and infrastructure.
 
-The following URLs have been provided to us, accessible only from these source IPs / hosts : 
+The following URLs have been provided to us and accessible only from these source IPs / hosts : 
 
 `From t2pml0007 (stage env) : $ curl -v -k https://oasys400.noms.gsi.gov.uk/api/health`
     

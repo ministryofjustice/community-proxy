@@ -14,7 +14,7 @@ import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.justice.digital.hmpps.community.CommunityProxyApplication;
-import uk.gov.justice.digital.hmpps.community.model.Offender;
+import uk.gov.justice.digital.hmpps.community.model.ManagedOffender;
 import uk.gov.justice.digital.hmpps.community.services.CommunityApiClient;
 import uk.gov.justice.digital.hmpps.community.services.CommunityProxyService;
 
@@ -29,12 +29,9 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @SpringBootTest(classes = {CommunityProxyApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class CommunityProxyAuthTests {
 
-    // Mock out any calls to the back-end Delius API - only interested in the proxy JWT token authentication
-
     @MockBean
     private CommunityApiClient communityApiClient;
 
-    // Real service object
     @Autowired
     private CommunityProxyService service;
 
@@ -70,7 +67,7 @@ public class CommunityProxyAuthTests {
                     testUrl,
                     HttpMethod.GET,
                     createRequestEntityWithJwtToken(null, roleNotPresentToken),
-                    new ParameterizedTypeReference<List<Offender>>(){});
+                    new ParameterizedTypeReference<List<ManagedOffender>>(){});
         }
         catch(Exception e) {
             assertThat(e.getMessage()).contains("403 Forbidden");
@@ -88,7 +85,7 @@ public class CommunityProxyAuthTests {
                      testUrl,
                      HttpMethod.GET,
                      createRequestEntityWithJwtToken(null, expiredToken),
-                     new ParameterizedTypeReference<List<Offender>>(){});
+                     new ParameterizedTypeReference<List<ManagedOffender>>(){});
         }
         catch(Exception e) {
             assertThat(e.getMessage()).contains("401 Unauthorized");
@@ -105,8 +102,8 @@ public class CommunityProxyAuthTests {
 
         // Mocked response in place of the Delius API connection being established
         var expectedBody = List.of(
-                Offender.builder().offenderNo("IT9999").build(),
-                Offender.builder().offenderNo("IT0001").build()
+                ManagedOffender.builder().nomsNumber("IT9999").build(),
+                ManagedOffender.builder().nomsNumber("IT0001").build()
         );
 
         var mockResponse = new ResponseEntity<>(expectedBody, HttpStatus.OK);
@@ -119,7 +116,7 @@ public class CommunityProxyAuthTests {
                     testUrl,
                     HttpMethod.GET,
                     createRequestEntityWithJwtToken(null, goodToken),
-                    new ParameterizedTypeReference<List<Offender>>(){});
+                    new ParameterizedTypeReference<List<ManagedOffender>>(){});
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).containsAll(expectedBody);

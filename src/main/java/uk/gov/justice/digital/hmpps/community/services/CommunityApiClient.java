@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriTemplate;
-import uk.gov.justice.digital.hmpps.community.model.Offender;
+import uk.gov.justice.digital.hmpps.community.model.ManagedOffender;
 import uk.gov.justice.digital.hmpps.community.model.ResponsibleOfficer;
 
 import java.util.List;
@@ -15,21 +15,22 @@ import java.util.List;
 public class CommunityApiClient {
 
     private final RestCallHelper restCallHelper;
-    private static final ParameterizedTypeReference<List<Offender>> OFFENDERS = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<List<ManagedOffender>> OFFENDERS = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<List<ResponsibleOfficer>> OFFICERS = new ParameterizedTypeReference<>() {};
 
     @Autowired
     public CommunityApiClient(RestCallHelper restCallHelper) {
         this.restCallHelper = restCallHelper;
     }
 
-    public List<Offender> getOffendersForResponsibleOfficer(String staffCode) {
-        final var uriOffenders = "/staff/staffCode/{staffCode}/managedOffenders?current=true";
-        return restCallHelper.getForList(new UriTemplate(uriOffenders).expand(staffCode), OFFENDERS).getBody();
+    public List<ManagedOffender> getOffendersForResponsibleOfficer(String staffCode) {
+        var uriManagedOffenders = "/staff/staffCode/{staffCode}/managedOffenders?current=true";
+        return restCallHelper.getForList(new UriTemplate(uriManagedOffenders).expand(staffCode), OFFENDERS).getBody();
      }
 
-    public ResponsibleOfficer getResponsibleOfficerForOffender(String nomsNumber) {
-        final var uriResponsibleOfficer = "/offenders/nomsNumber/{nomsNumber}/responsibleOfficers?current-true&latest=true";
-        return restCallHelper.get(new UriTemplate(uriResponsibleOfficer).expand(nomsNumber), ResponsibleOfficer.class);
+    public List<ResponsibleOfficer> getResponsibleOfficersForOffender(String nomsNumber) {
+        var uriResponsibleOfficers = "/offenders/nomsNumber/{nomsNumber}/responsibleOfficers?current=true";
+        return restCallHelper.getForList(new UriTemplate(uriResponsibleOfficers).expand(nomsNumber), OFFICERS).getBody();
     }
 
     public String getRemoteStatus() {
