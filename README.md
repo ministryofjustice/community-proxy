@@ -7,7 +7,7 @@ has the correct signature (ie. issued by the MOJ oauth2 service) and containing 
 
 The service offers the following endpoints:
 
-`List<Offenders> GET /communityapi/api/staff/staffCode/{staffCode}/managedOffenders`
+`List<ManagedOffender> GET /communityapi/api/staff/staffCode/{staffCode}/managedOffenders`
 
 `List<ResponsibleOfficer> GET /communityapi/api/offenders/nomsNumber/{nomsId}/responsibleOfficers`
 
@@ -60,7 +60,7 @@ https://community-api-t2.hmpps.dsd.io/communityapi/api/offenders/nomsNumber/888/
 
 Response: 
 
-`List<ManagedOffeder>`
+`List<ManagedOffender>`
 
 or 
 
@@ -89,6 +89,13 @@ Response:
 `{ "status":"UP"}`
 
 
+`curl -X GET https://community-api-t2.hmpps.dsd.io/communityapi/api/remote-status`
+
+Response:
+
+`{ The full remote status info from the Community API incl. disk space, db status etc }`
+
+
 # Properties to Override in non-local Environments
 
 The base64-encoded public key of the oauth signing server for this environment:
@@ -99,18 +106,23 @@ The base64-encoded public key of the oauth signing server for this environment:
  
 `TRUST_STORE_PASSWORD=secret` 
 
- The base endpoint for the Delius API(e.g https://oasys400.noms.gsi.gov.uk):
+ The base endpoint for the Delius API (e.g https://oasys400.noms.gsi.gov.uk/api) :
 
-`DELIUS_ENDPOINT_URL=https://host:port`
+`DELIUS_ENDPOINT_URL=https://host:port/api`
 
  The username to login to the Delius API and retrieve a token:
 
-`DELIUS_USERNAME=DeliusAdminUserName`
+`DELIUS_API_USERNAME=DeliusAdminUserName`
 
- The FQDN, port and IP address for the Delius API host (used in the docker run command):
+ The FQDN and IP address for the Delius API host (used in the docker run command to add a host entry):
 
-`DELIUS_NAME_IP_MAP=ndseis.ad.nps.internal:443:10.162.217.15`
+`DELIUS_NAME_IP_MAP=ndseis.ad.nps.internal:10.162.217.15`
 
+ The application insights key to forward logging events to Azure
+
+`APPLICATION_INSIGHTS_KEY=abbe4433bb434b34bb...`
+
+[ if omitted or an empty value it will not record log events ] 
 
 # Trusted Certificates
 
@@ -149,20 +161,74 @@ To build & push the docker image to Docker Hub:
 
 `$ docker push mojdigitalstudio/community-proxy:latest`
  
-To run the container locally, expose 8081 to the local host and resolve host names use :
+To run the container locally and expose 8081 to the local host use :
   
 `$ docker pull mojdigitialstudio/community-proxy:latest`
 
-`$ docker run -p 8081:8080 -name "community-proxy" -d -t mojdigitalstudio/community-proxy:latest`
+`$ docker run -p 8081:8080 --name "community-proxy" -d -t mojdigitalstudio/community-proxy:latest`
 
-To run in staging (on t2pml0007) :
+[ This will use default properties rather then overriding them with environment variables ] 
 
-`$ docker run -p 8081:8080 --add-host=oasys400.noms.gsi.gov.uk:10.162.216.115 -name "community-proxy" -d -t mojdigitalstudio/community-proxy:latest`
 
-In production:
+To run in staging (t2pml0007) 
 
-`$ docker run -p 8081:8080 --add-host=ndseis.ad.nps.internal:10.162.217.15 -name "community-proxy" -d -t mojdigitalstudio/community-proxy:latest`
+Environment: 
+
 `
+ TRUST_STORE_PASSWORD=<the password used when creating the trust store>
+ JWT_PUBLIC_KEY=<from the oauth system>
+ DELIUS_ENDPOINT_URL=https://oasys400.noms.gsi.gov.uk/api
+ APPLICATION_INSIGHTS_KEY=<from Azure portal for T2>
+ DELIUS_API_USERNAME=<from Delius API team>
+ DELIUS_NAME_IP_MAP=oasys400.noms.gsi.gov.uk:10.162.216.115
+`
+
+`$ docker run -p 8081:8080 \
+             --name "community-proxy" \
+             --add-host=${DELIUS_NAME_IP_MAP} \
+             -e TRUST_STORE_PASSWORD=xxxxxx \
+             -e JWT_PUBLIC_KEY=xxxxxx \
+             -e DELIUS_ENDPOINT_URL=https://oasys400.noms.gsi.gov.uk/api
+             -e DELIUS_API_USERNAME=xxxxxxx \
+             -e APPLICATION_INSIGHTS_KEY=xxxxx \
+             -d -t mojdigitalstudio/community-proxy:latest`
+
+[ For T2 omit the JWT_PUBLIC_KEY to accept the default which is the T3 public key ] 
+
+
+To run in production (pdpml00025) :
+
+Environment:
+
+`
+ TRUST_STORE_PASSWORD=<the password used when creating the trust store>
+ JWT_PUBLIC_KEY=<from the oauth system>
+ DELIUS_ENDPOINT_URL=https://ndseis.ad.nps.internal/api
+ APPLICATION_INSIGHTS_KEY=<from Azure portal for production>
+ DELIUS_API_USERNAME=<from Delius API team>
+ DELIUS_NAME_IP_MAP=ndseis.ad.nps.internal:10.162.217.15
+`
+
+`$ docker run -p 8081:8080 \
+             --name "community-proxy" \
+             --add-host=${DELIUS_NAME_IP_MAP} \
+             -e TRUST_STORE_PASSWORD=xxxxxx \
+             -e JWT_PUBLIC_KEY=xxxxxx \
+             -e DELIUS_ENDPOINT_URL=https://ndseis.ad.nps.internal/api
+             -e DELIUS_API_USERNAME=xxxxxxx \
+             -e APPLICATION_INSIGHTS_KEY=xxxxx \
+             -d -t mojdigitalstudio/community-proxy:latest`
+
+[ For PRODUCTION - supply all values - no defaults ]
+
+
+# Maintenance tasks
+
+* Check the SSL certificate expiry dates for the Tolomy gateways in T2 and Production 
+* If expired the new certs (or preferable the root/intermediate CA certs) will need to be added to the trust store.
+* Health monitoring will show whether the remote Community API is healthy or not
+* Application insights will record logged events to show usage
+
 
 # IntelliJ setup
 
