@@ -7,7 +7,7 @@ has the correct signature (ie. issued by the MOJ oauth2 service) and containing 
 
 The service offers the following endpoints:
 
-`List<Offenders> GET /communityapi/api/staff/staffCode/{staffCode}/managedOffenders`
+`List<ManagedOffender> GET /communityapi/api/staff/staffCode/{staffCode}/managedOffenders`
 
 `List<ResponsibleOfficer> GET /communityapi/api/offenders/nomsNumber/{nomsId}/responsibleOfficers`
 
@@ -60,7 +60,7 @@ https://community-api-t2.hmpps.dsd.io/communityapi/api/offenders/nomsNumber/888/
 
 Response: 
 
-`List<ManagedOffeder>`
+`List<ManagedOffender>`
 
 or 
 
@@ -89,6 +89,13 @@ Response:
 `{ "status":"UP"}`
 
 
+`curl -X GET https://community-api-t2.hmpps.dsd.io/communityapi/api/remote-status`
+
+Response:
+
+`{ The full remote status info from the Community API incl. disk space, db status etc }`
+
+
 # Properties to Override in non-local Environments
 
 The base64-encoded public key of the oauth signing server for this environment:
@@ -99,23 +106,23 @@ The base64-encoded public key of the oauth signing server for this environment:
  
 `TRUST_STORE_PASSWORD=secret` 
 
- The base endpoint for the Delius API(e.g https://oasys400.noms.gsi.gov.uk):
+ The base endpoint for the Delius API (e.g https://oasys400.noms.gsi.gov.uk/api) :
 
-`DELIUS_ENDPOINT_URL=https://host:port`
+`DELIUS_ENDPOINT_URL=https://host:port/api`
 
  The username to login to the Delius API and retrieve a token:
 
 `DELIUS_API_USERNAME=DeliusAdminUserName`
 
- The FQDN, port and IP address for the Delius API host (used in the docker run command):
+ The FQDN and IP address for the Delius API host (used in the docker run command to add a host entry):
 
 `DELIUS_NAME_IP_MAP=ndseis.ad.nps.internal:10.162.217.15`
 
- The application insights key
+ The application insights key to forward logging events to Azure
 
 `APPLICATION_INSIGHTS_KEY=abbe4433bb434b34bb...`
 
-[ if omitted or an empty value it will not record any log events to App Insights ] 
+[ if omitted or an empty value it will not record log events ] 
 
 # Trusted Certificates
 
