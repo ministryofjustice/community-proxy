@@ -13,7 +13,15 @@ The service offers the following endpoints:
 
 `String GET /communityapi/api/remote-status`
 
-`String GET /communityapi/health`
+
+`String GET /communityapi/ping`: will respond `pong` to all requests.  This should be used by dependent systems to check connectivity to community proxy,
+rather than calling the `/health` endpoint.
+
+`String GET /communityapi/health`: provides information about the application health and its dependencies.  This should only be used
+by community proxy health monitoring (e.g. pager duty) and not other systems who wish to find out the state of community proxy.
+
+`String GET /communityapi/info`: provides information about the version of deployed application.
+
 
 The full swagger documentation (in T2) can be found here:
 
