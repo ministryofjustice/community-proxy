@@ -60,6 +60,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                         "/csrf",
                         "/health",
                         "/info",
+                        "/ping",
                         "/api",
                         "/communityapi/**",
                         "/v2/api-docs",
