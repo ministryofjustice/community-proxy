@@ -49,11 +49,4 @@
         <appender-ref ref="aiAppender"/>
     </root>
 
-    <springProfile name="ai">
-        <root level="INFO">
-            <appender-ref ref="consoleAppender"/>
-            <appender-ref ref="aiAppender"/>
-        </root>
-    </springProfile>
-
 </configuration>
