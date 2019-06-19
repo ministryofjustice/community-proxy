@@ -39,11 +39,6 @@
         <appender-ref ref="aiAppender"/>
     </logger>
 
-    <logger name="com.microsoft.applicationinsights" additivity="false" level="INFO">
-        <appender-ref ref="consoleAppender"/>
-        <appender-ref ref="aiAppender"/>
-    </logger>
-
     <root level="INFO">
         <appender-ref ref="consoleAppender"/>
         <appender-ref ref="aiAppender"/>
