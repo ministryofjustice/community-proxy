@@ -234,8 +234,7 @@ Environment:
 
 Supply the information required (detailed in the run.sh, which docker uses)
 
-java -DAPPLICATION_INSIGHTS_IKEY=xxxxx \
-     -Djavax.net.ssl.trustStore=keystores/trusted.jks \
+java -Djavax.net.ssl.trustStore=keystores/trusted.jks \
      -Djavax.net.ssl.trustStorePassword=<trust store passwd> \
      -Djavax.net.ssl.trustStoreType=jks \
      -Ddelius.endpoint.url=<delius endpoint URL> \
@@ -243,6 +242,7 @@ java -DAPPLICATION_INSIGHTS_IKEY=xxxxx \
      -Djwt.public.key=<supply or omit to use default T3>
      -jar build/libs/community-proxy-2019-06-19.jar
 
+(NOTE: To test whether events are generated to app insights, you can specify an additional property -DAPPLICATION_INSIGHTS_IKEY=xxxxx) 
 
 # Maintenance tasks
 
