@@ -128,7 +128,7 @@ The base64-encoded public key of the oauth signing server for this environment:
 
  The application insights key to forward logging events to Azure
 
-`APP_INSIGHTS_KEY=abbe4433bb434b34bb...`
+`APPLICATION_INSIGHTS_IKEY=abbe4433bb434b34bb...`
 
 [ if omitted or an empty value it will not record log events to Azure application insights ] 
 
@@ -186,7 +186,7 @@ Environment:
  TRUST_STORE_PASSWORD=<the password used when creating the trust store>
  JWT_PUBLIC_KEY=<from the oauth system>
  DELIUS_ENDPOINT_URL=https://oasys400.noms.gsi.gov.uk/api
- APP_INSIGHTS_KEY=<from Azure portal for T2>
+ APPLICATION_INSIGHTS_IKEY=<from Azure portal for T2>
  DELIUS_API_USERNAME=<from Delius API team>
  DELIUS_NAME_IP_MAP=oasys400.noms.gsi.gov.uk:10.162.216.115
 `
@@ -198,7 +198,7 @@ Environment:
              -e JWT_PUBLIC_KEY=xxxxxx \
              -e DELIUS_ENDPOINT_URL=https://oasys400.noms.gsi.gov.uk/api
              -e DELIUS_API_USERNAME=xxxxxxx \
-             -e APP_INSIGHTS_KEY=xxxxx \
+             -e APPLICATION_INSIGHTS_IKEY=xxxxx \
              -d -t mojdigitalstudio/community-proxy:latest`
 
 [ For T2 omit the JWT_PUBLIC_KEY to accept the default which is the T3 public key ] 
@@ -212,7 +212,7 @@ Environment:
  TRUST_STORE_PASSWORD=<the password used when creating the trust store>
  JWT_PUBLIC_KEY=<from the oauth system>
  DELIUS_ENDPOINT_URL=https://ndseis.ad.nps.internal/api
- APP_INSIGHTS_KEY=<from Azure portal for production>
+ APPLICATION_INSIGHTS_IKEY=<from Azure portal for production>
  DELIUS_API_USERNAME=<from Delius API team>
  DELIUS_NAME_IP_MAP=ndseis.ad.nps.internal:10.162.217.15
 `
@@ -224,7 +224,7 @@ Environment:
              -e JWT_PUBLIC_KEY=xxxxxx \
              -e DELIUS_ENDPOINT_URL=https://ndseis.ad.nps.internal/api
              -e DELIUS_API_USERNAME=xxxxxxx \
-             -e APP_INSIGHTS_KEY=xxxxx \
+             -e APPLICATION_INSIGHTS_IKEY=xxxxx \
              -d -t mojdigitalstudio/community-proxy:latest`
 
 [ For PRODUCTION - supply all values - no defaults ]
@@ -242,7 +242,7 @@ java -Djavax.net.ssl.trustStore=keystores/trusted.jks \
      -Djwt.public.key=<supply or omit to use default T3>
      -jar build/libs/community-proxy-2019-06-19.jar
 
-(NOTE: To test whether events are generated to app insights, you can specify an additional property -DAPPLICATION_INSIGHTS_IKEY=xxxxx) 
+(NOTE: To test whether events are generated to app insights, you can specify a property of -DAPPLICATION_INSIGHTS_IKEY=xxxxx) 
 
 # Maintenance tasks
 
