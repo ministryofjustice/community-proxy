@@ -242,7 +242,9 @@ java -Djavax.net.ssl.trustStore=keystores/trusted.jks \
      -Djwt.public.key=<supply or omit to use default T3>
      -jar build/libs/community-proxy-2019-06-19.jar
 
-(NOTE: To test whether events are generated to app insights, you can specify a property of -DAPPLICATION_INSIGHTS_IKEY=xxxxx) 
+(NOTE: To test whether events are generated to app insights, you can specify a property of -DAPPLICATION_INSIGHTS_IKEY=xxxxx
+       or an envionment variable of APPLICATION_INSIGHTS_IKEY. Best not to pollute real environments with local stats too much 
+       though).
 
 # Maintenance tasks
 

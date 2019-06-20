@@ -4,7 +4,6 @@ JAVA_OPTS="-Djavax.net.ssl.trustStore=/app/trusted.jks \
            -Djavax.net.ssl.trustStorePassword=${TRUST_STORE_PASSWORD} \
            -Djavax.net.ssl.trustStoreType=jks \
            -Dcom.sun.management.jmxremote.local.only=false \
-           -DAPPLICATION_INSIGHTS_IKEY=${APPLICATION_INSIGHTS_IKEY} \
            -Djava.security.egd=file:/dev/./urandom"
 
 exec java -XX:+PrintFlagsFinal ${JAVA_OPTS} -jar /app/app.jar
