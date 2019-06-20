@@ -132,6 +132,10 @@ The base64-encoded public key of the oauth signing server for this environment:
 
 [ if omitted or an empty value it will not record log events to Azure application insights ] 
 
+`SPRING_PROFILES_ACTIVE=production,logstash`
+
+The default profile is production (yes, even in non-prod environments) and adding logstash will send logs to AI
+
 # Trusted Certificates
 
 The docker images is built to contain a trust store that is populated with the certificates
@@ -189,6 +193,7 @@ Environment:
  APPLICATION_INSIGHTS_IKEY=<from Azure portal for T2>
  DELIUS_API_USERNAME=<from Delius API team>
  DELIUS_NAME_IP_MAP=oasys400.noms.gsi.gov.uk:10.162.216.115
+ SPRING_PROFILES_ACTIVE=production,logstash
 `
 
 `$ docker run -p 8081:8080 \
@@ -199,6 +204,7 @@ Environment:
              -e DELIUS_ENDPOINT_URL=https://oasys400.noms.gsi.gov.uk/api
              -e DELIUS_API_USERNAME=xxxxxxx \
              -e APPLICATION_INSIGHTS_IKEY=xxxxx \
+             -e SPRING_PROFILES_ACTIVE=production,logstash \
              -d -t mojdigitalstudio/community-proxy:latest`
 
 [ For T2 omit the JWT_PUBLIC_KEY to accept the default which is the T3 public key ] 
@@ -215,6 +221,7 @@ Environment:
  APPLICATION_INSIGHTS_IKEY=<from Azure portal for production>
  DELIUS_API_USERNAME=<from Delius API team>
  DELIUS_NAME_IP_MAP=ndseis.ad.nps.internal:10.162.217.15
+ SPRING_PROFILES_ACTIVE=production,logstash
 `
 
 `$ docker run -p 8081:8080 \
@@ -225,6 +232,7 @@ Environment:
              -e DELIUS_ENDPOINT_URL=https://ndseis.ad.nps.internal/api
              -e DELIUS_API_USERNAME=xxxxxxx \
              -e APPLICATION_INSIGHTS_IKEY=xxxxx \
+             -e SPRING_PROFILES_ACTIVE=production,logstash \
              -d -t mojdigitalstudio/community-proxy:latest`
 
 [ For PRODUCTION - supply all values - no defaults ]
@@ -239,12 +247,12 @@ java -Djavax.net.ssl.trustStore=keystores/trusted.jks \
      -Djavax.net.ssl.trustStoreType=jks \
      -Ddelius.endpoint.url=<delius endpoint URL> \
      -Ddelius.api.username=<delius username> \
-     -Djwt.public.key=<supply or omit to use default T3>
+     -Djwt.public.key=<supply or omit to use default T3> \
      -jar build/libs/community-proxy-2019-06-19.jar
 
 (NOTE: To test whether events are generated to app insights, you can specify a property of -DAPPLICATION_INSIGHTS_IKEY=xxxxx
-       or an envionment variable of APPLICATION_INSIGHTS_IKEY. Best not to pollute real environments with local stats too much 
-       though).
+       or an envionment variable of APPLICATION_INSIGHTS_IKEY and SPRING_PROFILES_ACTIVE in logstash. Best not to pollute 
+       real environments with local stats too much though).
 
 # Maintenance tasks
 
