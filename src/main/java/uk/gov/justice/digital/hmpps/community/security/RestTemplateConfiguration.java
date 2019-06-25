@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.justice.digital.hmpps.community.utils.JwtAuthInterceptor;
-import uk.gov.justice.digital.hmpps.community.utils.UserContextInterceptor;
+import uk.gov.justice.digital.hmpps.community.utils.W3cTracingInterceptor;
 
 import java.util.List;
 
@@ -41,14 +41,14 @@ public class RestTemplateConfiguration {
 
     @Autowired
     public RestTemplateConfiguration(
-            OAuth2ClientContext oauth2ClientContext,
-            ClientCredentialsResourceDetails communityApiDetails) {
+            final OAuth2ClientContext oauth2ClientContext,
+            final ClientCredentialsResourceDetails communityApiDetails) {
         this.oauth2ClientContext = oauth2ClientContext;
         this.communityApiDetails = communityApiDetails;
     }
 
     @Bean(name = "proxyApiOauthRestTemplate")
-    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+    public RestTemplate restTemplate(final RestTemplateBuilder restTemplateBuilder) {
         log.info("* * * Creating Proxy resource rest template with URL {}", proxyApiRootUri);
         return restTemplateBuilder
                 .rootUri(proxyApiRootUri)
@@ -57,7 +57,7 @@ public class RestTemplateConfiguration {
     }
 
     @Bean(name = "deliusApiHealthRestTemplate")
-    public RestTemplate deliusApiHealthRestTemplate(RestTemplateBuilder restTemplateBuilder) {
+    public RestTemplate deliusApiHealthRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
         log.info("* * * Creating Delius health rest template with URL {}", deliusApiRootUri);
         return restTemplateBuilder
                 .rootUri(deliusApiRootUri)
@@ -66,7 +66,7 @@ public class RestTemplateConfiguration {
     }
 
     @Bean(name = "deliusApiResourceRestTemplate")
-    public RestTemplate deliusApiRestTemplate(RestTemplateBuilder restTemplateBuilder) {
+    public RestTemplate deliusApiRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
         log.info("* * * Creating Delius resource rest template with URL {}", deliusApiRootUri);
         return restTemplateBuilder
                 .rootUri(deliusApiRootUri)
@@ -75,24 +75,23 @@ public class RestTemplateConfiguration {
 
     @Bean(name = "deliusApiLogonEntity")
     public HttpEntity<String> deliusApiLogonEntity() {
-        String postBody = deliusUsername;
-        HttpHeaders headers = new HttpHeaders();
+        final var headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
         return new HttpEntity<>(deliusUsername, headers);
     }
 
     private List<ClientHttpRequestInterceptor> getRequestInterceptors() {
         return List.of(
-                new UserContextInterceptor(),
+                new W3cTracingInterceptor(),
                 new JwtAuthInterceptor());
     }
 
     @Bean
-    public OAuth2RestTemplate communitySystemRestTemplate(GatewayAwareAccessTokenProvider accessTokenProvider) {
+    public OAuth2RestTemplate communitySystemRestTemplate(final GatewayAwareAccessTokenProvider accessTokenProvider) {
 
-        OAuth2RestTemplate communitySystemRestTemplate = new OAuth2RestTemplate(communityApiDetails, oauth2ClientContext);
-        List<ClientHttpRequestInterceptor> systemInterceptors = communitySystemRestTemplate.getInterceptors();
-        systemInterceptors.add(new UserContextInterceptor());
+        final var communitySystemRestTemplate = new OAuth2RestTemplate(communityApiDetails, oauth2ClientContext);
+        final var systemInterceptors = communitySystemRestTemplate.getInterceptors();
+        systemInterceptors.add(new W3cTracingInterceptor());
         communitySystemRestTemplate.setAccessTokenProvider(accessTokenProvider);
         RootUriTemplateHandler.addTo(communitySystemRestTemplate, this.deliusApiRootUri);
 

@@ -45,4 +45,3 @@ delius:
     username: DefaultValue
 
 azure.application-insights.web.enable-W3C: true
-azure.application-insights.web.enable-W3C-backcompat-mode: true
