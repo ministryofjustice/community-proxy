@@ -21,6 +21,7 @@ import uk.gov.justice.digital.hmpps.community.services.CommunityProxyService;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -61,17 +62,12 @@ public class CommunityProxyAuthTests {
         // Proxy endpoint (needs /api)
         final var testUrl = "/api/staff/staffCode/CX9998/managedOffenders";
 
-        try {
-
-            final var response = restTemplate.exchange(
+        assertThatThrownBy(() -> restTemplate.exchange(
                     testUrl,
                     HttpMethod.GET,
                     createRequestEntityWithJwtToken(null, roleNotPresentToken),
-                    new ParameterizedTypeReference<List<ManagedOffender>>(){});
-        }
-        catch(Exception e) {
-            assertThat(e.getMessage()).contains("403 Forbidden");
-        }
+                    new ParameterizedTypeReference<List<ManagedOffender>>(){})
+        ).hasMessageContaining("403");
     }
 
     @Test
@@ -80,16 +76,13 @@ public class CommunityProxyAuthTests {
         // Proxy endpoint (needs /api)
         final var testUrl = "/api/staff/staffCode/CX9998/managedOffenders";
 
-        try {
-             final var response = restTemplate.exchange(
-                     testUrl,
-                     HttpMethod.GET,
-                     createRequestEntityWithJwtToken(null, expiredToken),
-                     new ParameterizedTypeReference<List<ManagedOffender>>(){});
-        }
-        catch(Exception e) {
-            assertThat(e.getMessage()).contains("401 Unauthorized");
-        }
+        assertThatThrownBy(() -> restTemplate.exchange(
+                testUrl,
+                HttpMethod.GET,
+                createRequestEntityWithJwtToken(null, expiredToken),
+                new ParameterizedTypeReference<List<ManagedOffender>>() {
+                })
+        ).hasMessageContaining("401");
     }
 
     @Test
