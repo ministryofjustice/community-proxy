@@ -14,7 +14,7 @@ while :
 do
    echo -n "Enter the keystore password: "
    read STOREPASS
-   if [ ! -z $STOREPASS ]
+   if [ -z $STOREPASS ]
    then 
      echo "You must enter something.."
      break
