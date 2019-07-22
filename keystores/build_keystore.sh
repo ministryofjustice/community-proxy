@@ -14,7 +14,7 @@ while :
 do
    echo -n "Enter the keystore password: "
    read STOREPASS
-   if [ -z $STOREPASS ]
+   if [ ! -z $STOREPASS ]
    then 
      echo "You must enter something.."
      break
@@ -25,8 +25,8 @@ done
 keytool -storepasswd -new $STOREPASS -keystore trusted.jks -storepass changeit
 
 # Import the Tolomy certificates to trust
-keytool -noprompt -storepass $STOREPASS -keystore trusted.jks -importcert -file ndseis-ad-nps-internal.crt -alias ndseis
 keytool -noprompt -storepass $STOREPASS -keystore trusted.jks -importcert -file oasys400-noms-gov-uk.crt -alias oasys400
+keytool -noprompt -storepass $STOREPASS -keystore trusted.jks -importcert -file ndseis-ad-nps-internal2.crt -alias ndseis
 
 echo "Created keystore trusted.jks"
 
