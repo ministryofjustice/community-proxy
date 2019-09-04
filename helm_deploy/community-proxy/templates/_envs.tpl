@@ -12,4 +12,9 @@ env:
     value: {{ .Values.env.DELIUS_API_USERNAME | quote }}
   - name: JWT_PUBLIC_KEY
     value: {{ .Values.env.JWT_PUBLIC_KEY | quote }}
+  - name: APPINSIGHTS_INSTRUMENTATIONKEY
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "app.name" . }}
+        key: APPINSIGHTS_INSTRUMENTATIONKEY
 {{- end -}}

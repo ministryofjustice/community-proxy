@@ -43,6 +43,7 @@ commands:
           name: Deploy to << parameters.env >>
           command: |
             APP_VERSION=$(grep 'build.version=' build/libs/build-info.properties | awk -F= '{print $2}')
+            aws secretsmanager get-secret-value --secret-id ${KUBE_ENV_NAMESPACE} | jq -r .SecretString | \
             helm upgrade community-proxy ~/git/helm_deploy/community-proxy/. \
               --install --wait --force --reset-values --timeout 360 \
               --tiller-namespace=${KUBE_ENV_NAMESPACE} \
