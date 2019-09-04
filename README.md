@@ -237,6 +237,15 @@ Environment:
 
 [ For PRODUCTION - supply all values - no defaults ]
 
+To run in test (against Delius SR2 from Cloud Platform) :
+
+Environment:
+
+`<Defined in Kubernetes Cloud Platform>`
+
+In this environment the proxy is deployed into a Probation owned Kubernetes namespace (court-probation-dev). This allows routing to a VPN/SSH enabled proxy (called community-api-proxy) which then routes traffic back in to UKCloud. This allows testing against the Delius SR2 environment though is likely to be deprecated own the test environment has been migrated to AWS as part of the Delius AWS migration project.
+
+Given this routes internally with a namespace via plain HTTP (before routing via SSH) no specific certificate store setup is required.
 
 # Run Locally (outside of Docker)
 

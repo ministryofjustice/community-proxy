@@ -5,7 +5,67 @@ defaults: &defaults
   environment:
     JAVA_TOOL_OPTIONS: -Xmx1024m -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2
 
-version: 2
+version: 2.1
+commands:
+  setup:
+    description: "Install tools and configure kubectl"
+    steps:
+      - aws-cli/install
+      - kubernetes/install
+      - helm/install-helm-client:
+          version: v2.13.1
+      - run:
+          name: Setup kubectl
+          command: |
+            echo -n "${KUBE_ENV_CACERT}" | base64 -d > /tmp/cluster_ca.crt
+            kubectl config set-cluster "${KUBE_ENV_NAME}" \
+              --certificate-authority="/tmp/cluster_ca.crt" \
+              --server="https://api.${KUBE_ENV_NAME}"
+            kubectl config set-credentials circleci \
+              --token="${KUBE_ENV_TOKEN}"
+            kubectl config set-context circleci \
+              --cluster="${KUBE_ENV_NAME}" \
+              --user="circleci" \
+              --namespace="${KUBE_ENV_NAMESPACE}"
+            # confirm setup is ok
+            kubectl config use-context circleci
+  deploy_to_env:
+    parameters:
+      env:
+        type: string
+    steps:
+      - setup
+      - checkout:
+          path: ~/git
+      - attach_workspace:
+          at: ~/app
+      - deploy:
+          name: Deploy to << parameters.env >>
+          command: |
+            APP_VERSION=$(grep 'build.version=' build/libs/build-info.properties | awk -F= '{print $2}')
+            helm upgrade community-proxy ~/git/helm_deploy/community-proxy/. \
+              --install --wait --force --reset-values --timeout 360 \
+              --tiller-namespace=${KUBE_ENV_NAMESPACE} \
+              --namespace=${KUBE_ENV_NAMESPACE} \
+              --description="${APP_VERSION} - ${CIRCLE_BUILD_URL}" \
+              --values ~/git/helm_deploy/values-<< parameters.env >>.yaml \
+              --values - \
+              --set image.tag="${APP_VERSION}"
+executors:
+  deployer:
+    docker:
+      - image: circleci/python:3
+    working_directory: ~/app
+  builder:
+    docker:
+      - image: circleci/node:10.15.3-browsers
+    working_directory: ~/app
+
+orbs:
+  aws-cli: circleci/aws-cli@0.1.13
+  kubernetes: circleci/kubernetes@0.3.0
+  helm: circleci/helm@0.1.2
+
 jobs:
   build:
     <<: *defaults
@@ -30,6 +90,11 @@ jobs:
           path: build/test-results
       - store_artifacts:
           path: build/reports/tests
+      - run:
+          name: Extract build-info
+          command: |
+            jar xvf build/libs/community-proxy-*.jar BOOT-INF/classes/META-INF/build-info.properties
+            mv BOOT-INF/classes/META-INF/build-info.properties build/libs
       - persist_to_workspace:
           root: .
           paths:
@@ -49,9 +114,7 @@ jobs:
       - run:
           name: Build container and publish to docker hub
           command: |
-            jar xvf build/libs/community-proxy-*.jar BOOT-INF/classes/META-INF/build-info.properties
-            APP_VERSION=$(grep 'build.version=' BOOT-INF/classes/META-INF/build-info.properties | awk -F= '{print $2}')
-            rm BOOT-INF/classes/META-INF/build-info.properties
+            APP_VERSION=$(grep 'build.version=' build/libs/build-info.properties | awk -F= '{print $2}')
 
             # Build the image
             docker build --rm=false . \
@@ -64,12 +127,16 @@ jobs:
                --label "build.gitref=$CIRCLE_SHA1"
 
             # Publish to docker hub for master branch builds
-            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-              docker login -u $DOCKER_USER -p $DOCKER_PASS
-              docker push mojdigitalstudio/community-proxy:$APP_VERSION
-              docker tag mojdigitalstudio/community-proxy:$APP_VERSION mojdigitalstudio/community-proxy:latest
-              docker push mojdigitalstudio/community-proxy:latest
-            fi
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push mojdigitalstudio/community-proxy:$APP_VERSION
+            docker tag mojdigitalstudio/community-proxy:$APP_VERSION mojdigitalstudio/community-proxy:latest
+            docker push mojdigitalstudio/community-proxy:latest
+
+  deploy_dev:
+    executor: deployer
+    steps:
+      - deploy_to_env:
+          env: "dev"
 
 workflows:
   version: 2
@@ -84,4 +151,8 @@ workflows:
           - build
           filters:
             branches:
-              only: master
+              only:
+              - master
+      - deploy_dev:
+          requires:
+          - build_docker
