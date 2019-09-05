@@ -43,5 +43,17 @@ public class OffendersResource {
             @NotNull @PathVariable(value = "nomsNumber") final String nomsNumber) {
         return communityProxyService.getResponsibleOfficersForOffender(nomsNumber);
     }
+
+    @ApiOperation(
+            value = "Return the convictions (AKA Delius Event) for an offender",
+            notes = "See http://deliusapi-dev.sbw4jt6rsq.eu-west-2.elasticbeanstalk.com/api/swagger-ui.html#!/Offender32convictions/getOffenderConvictionsByNomsNumberUsingGET for further details",
+            authorizations = {@Authorization("ROLE_COMMUNITY")},
+            nickname = "getConvictionsForOffender")
+    @GetMapping(path = "/offenders/nomsNumber/{nomsNumber}/convictions")
+    public String getConvictionsForOffender(
+            @ApiParam(name = "nomsNumber", value = "Nomis number for the offender", example = "A1234BB", required = true)
+            @NotNull @PathVariable(value = "nomsNumber") final String nomsNumber) {
+        return communityProxyService.getConvictionsForOffender(nomsNumber);
+    }
 }
 

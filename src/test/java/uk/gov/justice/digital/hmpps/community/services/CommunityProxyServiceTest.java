@@ -61,4 +61,11 @@ public class CommunityProxyServiceTest {
         Assertions.assertThat(result).hasSize(2);
         Assertions.assertThat(result).containsAll(responsibleOfficers);
     }
+
+    @Test
+    public void convictionsForOffenderReturnsResponseFromClient() {
+        when(communityApiClient.getConvictionsForOffender("AX999")).thenReturn("some response");
+
+        Assertions.assertThat(service.getConvictionsForOffender("AX999")).isEqualTo("some response");
+    }
 }
