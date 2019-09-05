@@ -29,6 +29,11 @@ public class CommunityApiClient {
         return restCallHelper.getForList(new UriTemplate(uriResponsibleOfficers).expand(nomsNumber), OFFICERS).getBody();
     }
 
+    public String getConvictionsForOffender(final String nomsNumber) {
+        final var uriResponsibleOfficers = "/offenders/nomsNumber/{nomsNumber}/convictions";
+        return restCallHelper.get(new UriTemplate(uriResponsibleOfficers).expand(nomsNumber));
+    }
+
     String getRemoteStatus() {
         final var uriRemoteStatus = "/health";
         return restCallHelper.get(new UriTemplate(uriRemoteStatus).expand());
