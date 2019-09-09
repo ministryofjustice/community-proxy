@@ -55,5 +55,17 @@ public class OffendersResource {
             @NotNull @PathVariable(value = "nomsNumber") final String nomsNumber) {
         return communityProxyService.getConvictionsForOffender(nomsNumber);
     }
+
+    @ApiOperation(
+            value = "Return the details for an offender",
+            notes = "See http://deliusapi-dev.sbw4jt6rsq.eu-west-2.elasticbeanstalk.com/api/swagger-ui.html#!/Offenders/getOffenderSummaryByNomsNumberUsingGET",
+            authorizations = {@Authorization("ROLE_COMMUNITY")},
+            nickname = "getOffenderDetails")
+    @GetMapping(path = "/offenders/nomsNumber/{nomsNumber}")
+    public String getOffenderDetails(
+            @ApiParam(name = "nomsNumber", value = "Nomis number for the offender", example = "A1234BB", required = true)
+            @NotNull @PathVariable(value = "nomsNumber") final String nomsNumber) {
+        return communityProxyService.getOffenderDetails(nomsNumber);
+    }
 }
 

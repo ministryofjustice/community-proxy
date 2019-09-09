@@ -32,6 +32,11 @@ public class CommunityProxyService {
     }
 
     @PreAuthorize("hasRole('ROLE_COMMUNITY')")
+    public String getOffenderDetails(@NotNull final String nomsNumber) {
+        return communityApiClient.getOffenderDetails(nomsNumber);
+    }
+
+    @PreAuthorize("hasRole('ROLE_COMMUNITY')")
     public String getRemoteStatus() {
         return communityApiClient.getRemoteStatus();
     }
