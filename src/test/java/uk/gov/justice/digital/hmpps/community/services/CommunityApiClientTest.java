@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.community.model.ManagedOffender;
 import uk.gov.justice.digital.hmpps.community.model.ResponsibleOfficer;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -74,5 +75,22 @@ public class CommunityApiClientTest {
         assertThat(responsibleOfficers).containsAll(expectedBody);
         verify(restCallHelper).getForList(eq(new URI(testUri)), isA(ParameterizedTypeReference.class));
         verifyNoMoreInteractions(restCallHelper);
+    }
+
+    @Test
+    public void nomsNumberExpandedInUrlForOffenderConvictions() throws URISyntaxException {
+        when(restCallHelper.get(any())).thenReturn("some response");
+
+        communityApiClient.getConvictionsForOffender("A123455");
+
+        verify(restCallHelper).get(new URI("/offenders/nomsNumber/A123455/convictions"));
+    }
+    @Test
+    public void nomsNumberExpandedInUrlForOffenderDetails() throws URISyntaxException {
+        when(restCallHelper.get(any())).thenReturn("some response");
+
+        communityApiClient.getOffenderDetails("A123455");
+
+        verify(restCallHelper).get(new URI("/offenders/nomsNumber/A123455"));
     }
 }
