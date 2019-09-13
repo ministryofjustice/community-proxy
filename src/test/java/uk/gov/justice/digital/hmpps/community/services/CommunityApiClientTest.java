@@ -93,4 +93,13 @@ public class CommunityApiClientTest {
 
         verify(restCallHelper).get(new URI("/offenders/nomsNumber/A123455"));
     }
+
+    @Test
+    public void nomsNumberExpandedInUrlForOffenderDocuments() throws URISyntaxException {
+        when(restCallHelper.get(any())).thenReturn("some response");
+
+        communityApiClient.getOffenderDocuments("A123455");
+
+        verify(restCallHelper).get(new URI("/offenders/nomsNumber/A123455/documents/grouped"));
+    }
 }

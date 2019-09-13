@@ -75,4 +75,11 @@ public class CommunityProxyServiceTest {
 
         Assertions.assertThat(service.getOffenderDetails("AX999")).isEqualTo("some response");
     }
+
+    @Test
+    public void offenderDocumentsReturnsResponseFromClient() {
+        when(communityApiClient.getOffenderDocuments("AX999")).thenReturn("some response");
+
+        Assertions.assertThat(service.getOffenderDocuments("AX999")).isEqualTo("some response");
+    }
 }
