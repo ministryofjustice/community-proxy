@@ -40,4 +40,9 @@ public class CommunityProxyService {
     public String getRemoteStatus() {
         return communityApiClient.getRemoteStatus();
     }
+
+    @PreAuthorize("hasRole('ROLE_COMMUNITY')")
+    public String getOffenderDocuments(String nomsNumber) {
+        return communityApiClient.getOffenderDocuments(nomsNumber);
+    }
 }

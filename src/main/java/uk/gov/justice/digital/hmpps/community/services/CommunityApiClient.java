@@ -37,6 +37,10 @@ public class CommunityApiClient {
         return restCallHelper.get(new UriTemplate("/offenders/nomsNumber/{nomsNumber}").expand(nomsNumber));
     }
 
+    public String getOffenderDocuments(final String nomsNumber) {
+        return restCallHelper.get(new UriTemplate("/offenders/nomsNumber/{nomsNumber}/documents/grouped").expand(nomsNumber));
+    }
+
     String getRemoteStatus() {
         final var uriRemoteStatus = "/health";
         return restCallHelper.get(new UriTemplate(uriRemoteStatus).expand());

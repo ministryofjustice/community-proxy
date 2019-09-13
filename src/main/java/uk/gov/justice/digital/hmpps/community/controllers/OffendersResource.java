@@ -67,5 +67,18 @@ public class OffendersResource {
             @NotNull @PathVariable(value = "nomsNumber") final String nomsNumber) {
         return communityProxyService.getOffenderDetails(nomsNumber);
     }
+
+    @ApiOperation(
+            value = "Returns all document's meta data for an offender",
+            notes = "See http://deliusapi-dev.sbw4jt6rsq.eu-west-2.elasticbeanstalk.com/api/swagger-ui.html#!/Offenders/getOffenderGroupedDocumentByNomsNumber",
+            authorizations = {@Authorization("ROLE_COMMUNITY")},
+            nickname = "getOffenderDetails")
+    @GetMapping(path = "/offenders/nomsNumber/{nomsNumber}/documents/grouped")
+    public String getOffenderDocuments(
+            @ApiParam(name = "nomsNumber", value = "Nomis number for the offender", example = "A1234BB", required = true)
+            @NotNull @PathVariable(value = "nomsNumber") final String nomsNumber) {
+        return communityProxyService.getOffenderDocuments(nomsNumber);
+    }
+
 }
 

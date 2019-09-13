@@ -139,6 +139,33 @@ public class OffendersResourceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
+    @Test
+    public void offenderDocumentsWillPassthroughResponseFromProxiedAPI() {
+        final var nomsNumber = "CX9998";
+        final var someAPIResponse = "{\"data\": 1 }";
+
+        when(communityApiClient.getOffenderDocuments(nomsNumber)).thenReturn(someAPIResponse);
+
+        final var response = restTemplate.exchange(
+                String.format("/api/offenders/nomsNumber/%s/documents/grouped", nomsNumber),
+                HttpMethod.GET,
+                createRequestEntityWithJwtToken(goodToken), String.class);
+
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(someAPIResponse);
+    }
+
+    @Test
+    public void offenderDocumentsIsForbiddenWhenRoleNotPresent() {
+        final var response = restTemplate.exchange(
+                "/api/offenders/nomsNumber/CX9998/documents/grouped",
+                HttpMethod.GET,
+                createRequestEntityWithJwtToken(roleNotPresentToken), String.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
     private HttpEntity<?> createRequestEntityWithJwtToken(final String token) {
 
         final var headers = new HttpHeaders();
