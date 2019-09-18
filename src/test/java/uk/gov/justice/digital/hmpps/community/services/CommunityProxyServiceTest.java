@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.core.io.ByteArrayResource;
 import uk.gov.justice.digital.hmpps.community.model.ManagedOffender;
 import uk.gov.justice.digital.hmpps.community.model.ResponsibleOfficer;
 
@@ -81,5 +82,14 @@ public class CommunityProxyServiceTest {
         when(communityApiClient.getOffenderDocuments("AX999")).thenReturn("some response");
 
         Assertions.assertThat(service.getOffenderDocuments("AX999")).isEqualTo("some response");
+    }
+
+    @Test
+    public void offenderDocumentReturnsResponseFromClient() {
+        final var someAPIResponse = new ByteArrayResource("content".getBytes());
+
+        when(communityApiClient.getOffenderDocument("AX999", "1e593ff6-d5d6-4048-a671-cdeb8f65608b")).thenReturn(someAPIResponse);
+
+        Assertions.assertThat(service.getOffenderDocument("AX999", "1e593ff6-d5d6-4048-a671-cdeb8f65608b")).isEqualTo(someAPIResponse);
     }
 }

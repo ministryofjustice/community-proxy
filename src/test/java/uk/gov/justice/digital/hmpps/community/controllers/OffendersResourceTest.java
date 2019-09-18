@@ -10,6 +10,8 @@ import org.springframework.boot.test.json.JsonContent;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -162,6 +164,34 @@ public class OffendersResourceTest {
                 "/api/offenders/nomsNumber/CX9998/documents/grouped",
                 HttpMethod.GET,
                 createRequestEntityWithJwtToken(roleNotPresentToken), String.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    public void offenderDocumentWillPassthroughResponseFromProxiedAPI() {
+        final var nomsNumber = "CX9998";
+        final var documentId = "1e593ff6-d5d6-4048-a671-cdeb8f65608b";
+        final var someAPIResponse = new ByteArrayResource("content".getBytes());
+
+        when(communityApiClient.getOffenderDocument(nomsNumber, documentId)).thenReturn(someAPIResponse);
+
+        final var response = restTemplate.exchange(
+                String.format("/api/offenders/nomsNumber/%s/documents/%s", nomsNumber, documentId),
+                HttpMethod.GET,
+                createRequestEntityWithJwtToken(goodToken), Resource.class);
+
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(someAPIResponse);
+    }
+
+    @Test
+    public void offenderDocumentIsForbiddenWhenRoleNotPresent() {
+        final var response = restTemplate.exchange(
+                "/api/offenders/nomsNumber/CX9998/documents/1e593ff6-d5d6-4048-a671-cdeb8f65608b",
+                HttpMethod.GET,
+                createRequestEntityWithJwtToken(roleNotPresentToken), Resource.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }

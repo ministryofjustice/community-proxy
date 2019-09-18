@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.community.services;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriTemplate;
 import uk.gov.justice.digital.hmpps.community.model.ManagedOffender;
@@ -39,6 +40,12 @@ public class CommunityApiClient {
 
     public String getOffenderDocuments(final String nomsNumber) {
         return restCallHelper.get(new UriTemplate("/offenders/nomsNumber/{nomsNumber}/documents/grouped").expand(nomsNumber));
+    }
+
+    public Resource getOffenderDocument(String nomsNumber, String documentId) {
+        return restCallHelper
+                .get(new UriTemplate("/offenders/nomsNumber/{nomsNumber}/documents/{documentId}")
+                        .expand(nomsNumber, documentId), Resource.class);
     }
 
     String getRemoteStatus() {

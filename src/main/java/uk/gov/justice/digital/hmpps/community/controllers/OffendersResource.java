@@ -3,11 +3,10 @@ package uk.gov.justice.digital.hmpps.community.controllers;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.justice.digital.hmpps.community.model.ErrorResponse;
 import uk.gov.justice.digital.hmpps.community.model.ResponsibleOfficer;
 import uk.gov.justice.digital.hmpps.community.services.CommunityProxyService;
@@ -79,6 +78,19 @@ public class OffendersResource {
             @NotNull @PathVariable(value = "nomsNumber") final String nomsNumber) {
         return communityProxyService.getOffenderDocuments(nomsNumber);
     }
+
+    @ApiOperation(
+            value = "Returns the document contents meta data for a given document associated with an offender",
+            notes = "See http://deliusapi-dev.sbw4jt6rsq.eu-west-2.elasticbeanstalk.com/api/swagger-ui.html#!/Offenders/getOffenderDocumentByOffenderIdUsingGET",
+            authorizations = {@Authorization("ROLE_COMMUNITY")},
+            nickname = "getOffenderDocument")
+    @RequestMapping(value = "/offenders/nomsNumber/{nomsNumber}/documents/{documentId}", method = RequestMethod.GET)
+    public Resource getOffenderDocument(final @RequestHeader HttpHeaders httpHeaders,
+                                                                    final @PathVariable("nomsNumber") String nomsNumber,
+                                                                    final @PathVariable("documentId") String documentId) {
+        return communityProxyService.getOffenderDocument(nomsNumber, documentId);
+    }
+
 
 }
 

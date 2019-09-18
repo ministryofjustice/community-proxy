@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -48,8 +49,20 @@ public class RestCallHelper {
      * @return An object of type String
      */
     String get(final URI uri) {
+        return get(uri, String.class);
+    }
+
+    /**
+     * Perform a GET to the community API to retrieve a resource object
+     * @param uri          - the resource path (below the base path found in ${community.api.uri.root}
+     * @return A resource of type responseType
+     */
+    <T> T get(final URI uri, Class<T> responseType) {
         tokenService.checkOrRenew();
-        final var exchange = restTemplateResource.exchange(uri.toString(), HttpMethod.GET, tokenService.getTokenEnabledRequestEntity(null), String.class);
+        final var exchange = restTemplateResource.exchange(
+                uri.toString(),
+                HttpMethod.GET,
+                tokenService.getTokenEnabledRequestEntity(null), responseType);
         return exchange.getBody();
     }
 }

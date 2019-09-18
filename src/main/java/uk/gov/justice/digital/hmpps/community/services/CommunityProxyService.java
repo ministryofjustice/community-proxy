@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.community.services;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.digital.hmpps.community.model.ManagedOffender;
@@ -44,5 +45,10 @@ public class CommunityProxyService {
     @PreAuthorize("hasRole('ROLE_COMMUNITY')")
     public String getOffenderDocuments(String nomsNumber) {
         return communityApiClient.getOffenderDocuments(nomsNumber);
+    }
+
+    @PreAuthorize("hasRole('ROLE_COMMUNITY')")
+    public Resource getOffenderDocument(String nomsNumber, String documentId) {
+        return communityApiClient.getOffenderDocument(nomsNumber, documentId);
     }
 }
