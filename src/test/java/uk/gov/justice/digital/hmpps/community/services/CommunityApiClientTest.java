@@ -8,6 +8,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.justice.digital.hmpps.community.model.ManagedOffender;
@@ -106,10 +107,10 @@ public class CommunityApiClientTest {
 
     @Test
     public void nomsNumberAndDocumentIdExpandedInUrlForOffenderDocument() throws URISyntaxException {
-        when(restCallHelper.get(any(), any())).thenReturn(new ByteArrayResource("content".getBytes()));
+        when(restCallHelper.getEntity(any(), any())).thenReturn(new HttpEntity<>(new ByteArrayResource("content".getBytes())));
 
         communityApiClient.getOffenderDocument("A123455", "1e593ff6-d5d6-4048-a671-cdeb8f65608b");
 
-        verify(restCallHelper).get(new URI("/offenders/nomsNumber/A123455/documents/1e593ff6-d5d6-4048-a671-cdeb8f65608b"), Resource.class);
+        verify(restCallHelper).getEntity(new URI("/offenders/nomsNumber/A123455/documents/1e593ff6-d5d6-4048-a671-cdeb8f65608b"), Resource.class);
     }
 }

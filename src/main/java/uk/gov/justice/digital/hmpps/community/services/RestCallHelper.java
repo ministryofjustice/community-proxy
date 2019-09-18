@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.core.io.Resource;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -64,5 +64,13 @@ public class RestCallHelper {
                 HttpMethod.GET,
                 tokenService.getTokenEnabledRequestEntity(null), responseType);
         return exchange.getBody();
+    }
+
+    <T> HttpEntity<T> getEntity(URI uri, Class<T> responseType) {
+        tokenService.checkOrRenew();
+        return restTemplateResource.exchange(
+                uri.toString(),
+                HttpMethod.GET,
+                tokenService.getTokenEnabledRequestEntity(null), responseType);
     }
 }

@@ -4,7 +4,7 @@ import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.justice.digital.hmpps.community.model.ErrorResponse;
@@ -85,9 +85,9 @@ public class OffendersResource {
             authorizations = {@Authorization("ROLE_COMMUNITY")},
             nickname = "getOffenderDocument")
     @RequestMapping(value = "/offenders/nomsNumber/{nomsNumber}/documents/{documentId}", method = RequestMethod.GET)
-    public Resource getOffenderDocument(final @RequestHeader HttpHeaders httpHeaders,
-                                                                    final @PathVariable("nomsNumber") String nomsNumber,
-                                                                    final @PathVariable("documentId") String documentId) {
+    public HttpEntity<Resource> getOffenderDocument(
+            final @PathVariable("nomsNumber") String nomsNumber,
+            final @PathVariable("documentId") String documentId) {
         return communityProxyService.getOffenderDocument(nomsNumber, documentId);
     }
 

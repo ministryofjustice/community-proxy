@@ -12,10 +12,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.justice.digital.hmpps.community.CommunityProxyApplication;
 import uk.gov.justice.digital.hmpps.community.model.ResponsibleOfficer;
@@ -169,12 +166,14 @@ public class OffendersResourceTest {
     }
 
     @Test
-    public void offenderDocumentWillPassthroughResponseFromProxiedAPI() {
+    public void offenderDocumentWillPassthroughEntityFromProxiedAPI() {
         final var nomsNumber = "CX9998";
         final var documentId = "1e593ff6-d5d6-4048-a671-cdeb8f65608b";
-        final var someAPIResponse = new ByteArrayResource("content".getBytes());
+        final var body = new ByteArrayResource("content".getBytes());
+        final var headers = new HttpHeaders();
+        headers.set("Content-Type", "application/pdf");
 
-        when(communityApiClient.getOffenderDocument(nomsNumber, documentId)).thenReturn(someAPIResponse);
+        when(communityApiClient.getOffenderDocument(nomsNumber, documentId)).thenReturn(new HttpEntity<>(body, headers));
 
         final var response = restTemplate.exchange(
                 String.format("/api/offenders/nomsNumber/%s/documents/%s", nomsNumber, documentId),
@@ -183,7 +182,8 @@ public class OffendersResourceTest {
 
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo(someAPIResponse);
+        assertThat(response.getBody()).isEqualTo(body);
+        assertThat(response.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_PDF);
     }
 
     @Test
