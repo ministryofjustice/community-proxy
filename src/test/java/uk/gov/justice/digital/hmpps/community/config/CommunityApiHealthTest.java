@@ -40,7 +40,7 @@ public class CommunityApiHealthTest {
     public void setup() throws IOException {
         mockCommunityAPI = buildMockService(restTemplate);
         mockCommunityAPI
-                .expect(requestTo("http://localhost:8099/api/health"))
+                .expect(requestTo("http://localhost:8099/api/ping"))
                 .andRespond(withSuccess());
     }
 
