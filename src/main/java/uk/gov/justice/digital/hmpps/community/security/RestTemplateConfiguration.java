@@ -70,6 +70,7 @@ public class RestTemplateConfiguration {
         log.info("* * * Creating Delius resource rest template with URL {}", deliusApiRootUri);
         return restTemplateBuilder
                 .rootUri(deliusApiRootUri)
+                .additionalInterceptors(getRequestInterceptors())
                 .build();
     }
 
