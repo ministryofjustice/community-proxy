@@ -41,7 +41,10 @@ public class RestTemplateConfiguration {
     private String deliusUsername;
 
     @Value("${delius.api.ping-timeout:1s}")
-    private Duration timeout;
+    private Duration pingTimeout;
+
+    @Value("${delius.api.timeout:30s}")
+    private Duration apiTimeout;
 
     @Autowired
     public RestTemplateConfiguration(
@@ -66,8 +69,8 @@ public class RestTemplateConfiguration {
         return restTemplateBuilder
                 .rootUri(deliusApiRootUri)
                 .additionalInterceptors(getRequestInterceptors())
-                .setConnectTimeout(timeout)
-                .setReadTimeout(timeout)
+                .setConnectTimeout(pingTimeout)
+                .setReadTimeout(pingTimeout)
                 .build();
     }
 
@@ -77,6 +80,8 @@ public class RestTemplateConfiguration {
         return restTemplateBuilder
                 .rootUri(deliusApiRootUri)
                 .additionalInterceptors(getRequestInterceptors())
+                .setConnectTimeout(apiTimeout)
+                .setReadTimeout(apiTimeout)
                 .build();
     }
 
@@ -106,7 +111,7 @@ public class RestTemplateConfiguration {
     }
 
     @Component("accessTokenProvider")
-    public class GatewayAwareAccessTokenProvider extends ClientCredentialsAccessTokenProvider {
+    public static class GatewayAwareAccessTokenProvider extends ClientCredentialsAccessTokenProvider {
         /**
          * This subclass is necessary to make OAuth2AccessTokenSupport.getRestTemplate() public
          */
