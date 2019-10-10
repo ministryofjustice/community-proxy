@@ -21,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import uk.gov.justice.digital.hmpps.community.utils.JwtAuthInterceptor;
 import uk.gov.justice.digital.hmpps.community.utils.W3cTracingInterceptor;
 
+import java.time.Duration;
 import java.util.List;
 
 @Slf4j
@@ -38,6 +39,9 @@ public class RestTemplateConfiguration {
 
     @Value("${delius.api.username}")
     private String deliusUsername;
+
+    @Value("${delius.api.ping-timeout:1s}")
+    private Duration timeout;
 
     @Autowired
     public RestTemplateConfiguration(
@@ -62,6 +66,8 @@ public class RestTemplateConfiguration {
         return restTemplateBuilder
                 .rootUri(deliusApiRootUri)
                 .additionalInterceptors(getRequestInterceptors())
+                .setConnectTimeout(timeout)
+                .setReadTimeout(timeout)
                 .build();
     }
 
@@ -99,12 +105,11 @@ public class RestTemplateConfiguration {
         return communitySystemRestTemplate;
     }
 
-    /**
-     * This subclass is necessary to make OAuth2AccessTokenSupport.getRestTemplate() public
-     */
     @Component("accessTokenProvider")
     public class GatewayAwareAccessTokenProvider extends ClientCredentialsAccessTokenProvider {
-
+        /**
+         * This subclass is necessary to make OAuth2AccessTokenSupport.getRestTemplate() public
+         */
         @Override
         public RestOperations getRestTemplate() {
             return super.getRestTemplate();
