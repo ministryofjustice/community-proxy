@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.community.security;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,7 +45,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     private BuildProperties buildProperties;
 
     @Override
-    public void configure(HttpSecurity http) throws Exception {
+    public void configure(final HttpSecurity http) throws Exception {
 
         http
                 .sessionManagement()
@@ -73,7 +72,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     }
 
     @Override
-    public void configure(ResourceServerSecurityConfigurer config) {
+    public void configure(final ResourceServerSecurityConfigurer config) {
         config.tokenServices(tokenServices());
     }
 
@@ -84,7 +83,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
-        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        final var converter = new JwtAccessTokenConverter();
         converter.setVerifierKey(new String(Base64.decodeBase64(jwtPublicKey)));
         return converter;
     }
@@ -92,7 +91,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     @Bean
     @Primary
     public DefaultTokenServices tokenServices() {
-        DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+        final var defaultTokenServices = new DefaultTokenServices();
         defaultTokenServices.setTokenStore(tokenStore());
         return defaultTokenServices;
     }
@@ -100,13 +99,13 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     @Bean
     public Docket api() {
 
-        ApiInfo apiInfo = new ApiInfo(
+        final var apiInfo = new ApiInfo(
                 "Community Proxy Documentation",
                 "Proxy for authentication requests for resources on the Community API.",
                 getVersion(), "", contactInfo(), "", "",
                 Collections.emptyList());
 
-        Docket docket = new Docket(DocumentationType.SWAGGER_2)
+        final var docket = new Docket(DocumentationType.SWAGGER_2)
                 .useDefaultResponseMessages(false)
                 .apiInfo(apiInfo)
                 .select()

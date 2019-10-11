@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -17,16 +16,16 @@ public class CommunityApiHealth implements HealthIndicator {
     private final RestTemplate restTemplate;
 
     @Autowired
-    public CommunityApiHealth(@Qualifier("deliusApiHealthRestTemplate") RestTemplate restTemplate) {
+    public CommunityApiHealth(@Qualifier("deliusApiHealthRestTemplate") final RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
     @Override
     public Health health() {
         try {
-            final ResponseEntity<String> responseEntity = this.restTemplate.getForEntity("/ping", String.class);
+            final var responseEntity = this.restTemplate.getForEntity("/ping", String.class);
             return Health.up().withDetail("HttpStatus", responseEntity.getStatusCode()).build();
-        } catch (RestClientException e) {
+        } catch (final RestClientException e) {
             log.error("HEALTH: Exception detail ", e);
             return Health.down(e).build();
         }

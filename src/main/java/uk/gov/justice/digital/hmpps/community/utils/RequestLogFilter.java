@@ -31,19 +31,19 @@ public class RequestLogFilter extends OncePerRequestFilter {
     private final Pattern excludeUriRegex;
 
     @Autowired
-    public RequestLogFilter(@Value("${logging.uris.exclude.regex}") String excludeUris) {
+    public RequestLogFilter(@Value("${logging.uris.exclude.regex}") final String excludeUris) {
         excludeUriRegex = Pattern.compile(excludeUris);
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain filterChain) throws ServletException, IOException {
 
         if (excludeUriRegex.matcher(request.getRequestURI()).matches()) {
             MDC.put(SKIP_LOGGING, "true");
         }
 
         try {
-            LocalDateTime start = LocalDateTime.now();
+            final var start = LocalDateTime.now();
 
             if (log.isTraceEnabled() && isLoggingAllowed()) {
                 log.trace("Request: {} {}", request.getMethod(), request.getRequestURI());
@@ -51,10 +51,10 @@ public class RequestLogFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
 
-            long duration = Duration.between(start, LocalDateTime.now()).toMillis();
+            final var duration = Duration.between(start, LocalDateTime.now()).toMillis();
             MDC.put(REQUEST_DURATION, String.valueOf(duration));
 
-            int status = response.getStatus();
+            final var status = response.getStatus();
             MDC.put(RESPONSE_STATUS, String.valueOf(status));
 
             if (log.isTraceEnabled() && isLoggingAllowed()) {

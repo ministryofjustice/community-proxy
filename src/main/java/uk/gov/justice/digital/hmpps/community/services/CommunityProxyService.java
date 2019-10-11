@@ -44,12 +44,12 @@ public class CommunityProxyService {
     }
 
     @PreAuthorize("hasRole('ROLE_COMMUNITY')")
-    public String getOffenderDocuments(String nomsNumber) {
+    public String getOffenderDocuments(final String nomsNumber) {
         return communityApiClient.getOffenderDocuments(nomsNumber);
     }
 
     @PreAuthorize("hasRole('ROLE_COMMUNITY')")
-    public HttpEntity<Resource> getOffenderDocument(String nomsNumber, String documentId) {
+    public HttpEntity<Resource> getOffenderDocument(final String nomsNumber, final String documentId) {
         return communityApiClient.getOffenderDocument(nomsNumber, documentId);
     }
 }

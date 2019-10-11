@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.community.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -11,17 +12,18 @@ import java.io.IOException;
 @Slf4j
 public class UserContextFilter implements Filter {
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain)
             throws IOException, ServletException {
 
-        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        final String authToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        final var httpServletRequest = (HttpServletRequest) servletRequest;
+        final var authToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
         UserContext.setAuthToken(authToken);
         filterChain.doFilter(httpServletRequest, servletResponse);
     }
 
     @Override
-    public void init(FilterConfig filterConfig) {}
+    public void init(final FilterConfig filterConfig) {
+    }
 
     @Override
     public void destroy() {}

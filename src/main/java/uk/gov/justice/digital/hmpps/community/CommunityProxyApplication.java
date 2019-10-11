@@ -7,7 +7,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @SpringBootApplication
 @EnableResourceServer
 public class CommunityProxyApplication {
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         SpringApplication.run(CommunityProxyApplication.class, args);
     }
 }

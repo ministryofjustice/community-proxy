@@ -43,7 +43,7 @@ public class CommunityApiClient {
         return restCallHelper.get(new UriTemplate("/offenders/nomsNumber/{nomsNumber}/documents/grouped").expand(nomsNumber));
     }
 
-    public HttpEntity<Resource> getOffenderDocument(String nomsNumber, String documentId) {
+    public HttpEntity<Resource> getOffenderDocument(final String nomsNumber, final String documentId) {
         return restCallHelper
                 .getEntity(new UriTemplate("/offenders/nomsNumber/{nomsNumber}/documents/{documentId}")
                         .expand(nomsNumber, documentId), Resource.class);
