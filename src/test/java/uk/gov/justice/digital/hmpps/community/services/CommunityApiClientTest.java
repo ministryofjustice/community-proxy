@@ -41,8 +41,9 @@ public class CommunityApiClientTest {
     @Test
     public void testOffendersForResponsibleOfficer() throws Exception {
 
-        final String testUri = "/staff/staffCode/CX555/managedOffenders?current=true";
-        ParameterizedTypeReference<List<ManagedOffender>> OFFENDERS = new ParameterizedTypeReference<>() {};
+        final var testUri = "/staff/staffCode/CX555/managedOffenders?current=true";
+        final ParameterizedTypeReference<List<ManagedOffender>> OFFENDERS = new ParameterizedTypeReference<>() {
+        };
 
         final var expectedBody = List.of(
                 ManagedOffender.builder().nomsNumber("IT9999").build(),
@@ -62,8 +63,9 @@ public class CommunityApiClientTest {
     @Test
     public void testResponsibleOfficersForOffender() throws Exception {
 
-        final String testUri = "/offenders/nomsNumber/IT0001/responsibleOfficers?current=true";
-        ParameterizedTypeReference<List<ResponsibleOfficer>> OFFICERS = new ParameterizedTypeReference<>() {};
+        final var testUri = "/offenders/nomsNumber/IT0001/responsibleOfficers?current=true";
+        final ParameterizedTypeReference<List<ResponsibleOfficer>> OFFICERS = new ParameterizedTypeReference<>() {
+        };
 
         final var expectedBody = List.of(
                 ResponsibleOfficer.builder().staffCode("AX998").build(),

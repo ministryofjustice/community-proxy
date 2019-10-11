@@ -57,7 +57,7 @@ public class RestCallHelper {
      * @param uri          - the resource path (below the base path found in ${community.api.uri.root}
      * @return A resource of type responseType
      */
-    <T> T get(final URI uri, Class<T> responseType) {
+    <T> T get(final URI uri, final Class<T> responseType) {
         tokenService.checkOrRenew();
         final var exchange = restTemplateResource.exchange(
                 uri.toString(),
@@ -66,7 +66,7 @@ public class RestCallHelper {
         return exchange.getBody();
     }
 
-    <T> HttpEntity<T> getEntity(URI uri, Class<T> responseType) {
+    <T> HttpEntity<T> getEntity(final URI uri, final Class<T> responseType) {
         tokenService.checkOrRenew();
         return restTemplateResource.exchange(
                 uri.toString(),

@@ -6,19 +6,19 @@ public class StaffNotFoundException extends RuntimeException implements Supplier
 
     private static final String DEFAULT_MESSAGE_FOR_ID_FORMAT = "Staff [%s] is not found by this service.";
 
-    public static StaffNotFoundException withId(String id) {
+    public static StaffNotFoundException withId(final String id) {
         return new StaffNotFoundException(String.format(DEFAULT_MESSAGE_FOR_ID_FORMAT, id));
     }
 
-    public static StaffNotFoundException withMessage(String message) {
+    public static StaffNotFoundException withMessage(final String message) {
         return new StaffNotFoundException(message);
     }
 
-    public static StaffNotFoundException withMessage(String message, Object... args) {
+    public static StaffNotFoundException withMessage(final String message, final Object... args) {
         return new StaffNotFoundException(String.format(message, args));
     }
 
-    public StaffNotFoundException(String message) {
+    public StaffNotFoundException(final String message) {
         super(message);
     }
 

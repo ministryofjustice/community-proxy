@@ -11,7 +11,7 @@ public class PingEndpointTest {
     @Test
     public void ping() {
 
-        HttpHeaders headers = new HttpHeaders();
+        final var headers = new HttpHeaders();
         headers.add("Content-Type", "text/plain");
 
         assertThat(new PingEndpoint().ping()).isEqualTo(new ResponseEntity<>("pong", headers, HttpStatus.OK));

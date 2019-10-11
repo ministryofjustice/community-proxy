@@ -9,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
@@ -27,7 +26,7 @@ public class CommunityApiHealthTest {
 
     private MockRestServiceServer mockCommunityAPI;
 
-    private TestRestTemplate testRestTemplate = new TestRestTemplate();
+    private final TestRestTemplate testRestTemplate = new TestRestTemplate();
 
     @LocalServerPort
     int port;
@@ -44,8 +43,8 @@ public class CommunityApiHealthTest {
                 .andRespond(withSuccess());
     }
 
-    private MockRestServiceServer buildMockService(RestTemplate restTemplate) {
-        MockRestServiceServer.MockRestServiceServerBuilder infoBuilder = bindTo(restTemplate);
+    private MockRestServiceServer buildMockService(final RestTemplate restTemplate) {
+        final var infoBuilder = bindTo(restTemplate);
         infoBuilder.ignoreExpectOrder(true);
         return infoBuilder.build();
     }
@@ -53,7 +52,7 @@ public class CommunityApiHealthTest {
     @Test
     public void healthEndpointCallsCommunityAPIPing() {
 
-        ResponseEntity<String> response = testRestTemplate.getForEntity(
+        final var response = testRestTemplate.getForEntity(
                 getBasePath() + "communityapi/health", String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
