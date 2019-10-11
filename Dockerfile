@@ -14,8 +14,10 @@ RUN addgroup --gid 2000 --system appgroup && \
 WORKDIR /app
 
 COPY --chown=appuser:appgroup ./build/libs/community-proxy*.jar /app/app.jar
+COPY --chown=appuser:appgroup build/libs/applicationinsights-agent*.jar /app/agent.jar
 COPY --chown=appuser:appgroup run.sh /app
 COPY --chown=appuser:appgroup keystores/*.jks /app/
+COPY --chown=appuser:appgroup AI-Agent.xml /app
 
 USER 2000
 
