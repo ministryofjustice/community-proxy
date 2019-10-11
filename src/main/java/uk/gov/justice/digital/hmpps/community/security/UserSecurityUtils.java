@@ -10,38 +10,38 @@ import java.util.Map;
 @Component
 public class UserSecurityUtils implements AuthenticationFacade {
 
-	public Authentication getAuthentication() {
-		return SecurityContextHolder.getContext().getAuthentication();
-	}
+    public Authentication getAuthentication() {
+        return SecurityContextHolder.getContext().getAuthentication();
+    }
 
-	@Override
-	public String getCurrentUsername() {
+    @Override
+    public String getCurrentUsername() {
         final String username;
 
         final var userPrincipal = getUserPrincipal();
 
-		if (userPrincipal instanceof String) {
-			username = (String) userPrincipal;
-		} else if (userPrincipal instanceof UserDetails) {
-			username = ((UserDetails)userPrincipal).getUsername();
-		} else if (userPrincipal instanceof Map) {
+        if (userPrincipal instanceof String) {
+            username = (String) userPrincipal;
+        } else if (userPrincipal instanceof UserDetails) {
+            username = ((UserDetails) userPrincipal).getUsername();
+        } else if (userPrincipal instanceof Map) {
             final var userPrincipalMap = (Map) userPrincipal;
-			username = (String) userPrincipalMap.get("username");
-		} else {
-			username = null;
-		}
+            username = (String) userPrincipalMap.get("username");
+        } else {
+            username = null;
+        }
 
-		return username;
-	}
+        return username;
+    }
 
-	private Object getUserPrincipal() {
-		Object userPrincipal = null;
+    private Object getUserPrincipal() {
+        Object userPrincipal = null;
 
         final var auth = getAuthentication();
 
-		if (auth != null) {
-			userPrincipal = auth.getPrincipal();
-		}
-		return userPrincipal;
-	}
+        if (auth != null) {
+            userPrincipal = auth.getPrincipal();
+        }
+        return userPrincipal;
+    }
 }

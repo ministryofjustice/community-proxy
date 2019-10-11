@@ -89,6 +89,7 @@ public class CommunityApiClientTest {
 
         verify(restCallHelper).get(new URI("/offenders/nomsNumber/A123455/convictions"));
     }
+
     @Test
     public void nomsNumberExpandedInUrlForOffenderDetails() throws URISyntaxException {
         when(restCallHelper.get(any())).thenReturn("some response");

@@ -40,8 +40,7 @@ public class UserMdcFilter implements Filter {
                 MDC.put(USER_ID_HEADER, currentUsername);
             }
             chain.doFilter(request, response);
-        }
-        finally {
+        } finally {
             if (currentUsername != null) {
                 MDC.remove(USER_ID_HEADER);
             }
