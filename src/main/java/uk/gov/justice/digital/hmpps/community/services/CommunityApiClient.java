@@ -18,13 +18,15 @@ import java.util.List;
 public class CommunityApiClient {
 
     private final RestCallHelper restCallHelper;
-    private static final ParameterizedTypeReference<List<ManagedOffender>> OFFENDERS = new ParameterizedTypeReference<>() {};
-    private static final ParameterizedTypeReference<List<ResponsibleOfficer>> OFFICERS = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<List<ManagedOffender>> OFFENDERS = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<List<ResponsibleOfficer>> OFFICERS = new ParameterizedTypeReference<>() {
+    };
 
     public List<ManagedOffender> getOffendersForResponsibleOfficer(final String staffCode) {
         final var uriManagedOffenders = "/staff/staffCode/{staffCode}/managedOffenders?current=true";
         return restCallHelper.getForList(new UriTemplate(uriManagedOffenders).expand(staffCode), OFFENDERS).getBody();
-     }
+    }
 
     public List<ResponsibleOfficer> getResponsibleOfficersForOffender(final String nomsNumber) {
         final var uriResponsibleOfficers = "/offenders/nomsNumber/{nomsNumber}/responsibleOfficers?current=true";

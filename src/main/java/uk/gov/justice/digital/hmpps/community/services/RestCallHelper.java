@@ -45,7 +45,7 @@ public class RestCallHelper {
     /**
      * Perform a GET to the community API to retrieve a single object
      *
-     * @param uri          - the resource path (below the base path found in ${community.api.uri.root}
+     * @param uri - the resource path (below the base path found in ${community.api.uri.root}
      * @return An object of type String
      */
     String get(final URI uri) {
@@ -54,7 +54,8 @@ public class RestCallHelper {
 
     /**
      * Perform a GET to the community API to retrieve a resource object
-     * @param uri          - the resource path (below the base path found in ${community.api.uri.root}
+     *
+     * @param uri - the resource path (below the base path found in ${community.api.uri.root}
      * @return A resource of type responseType
      */
     <T> T get(final URI uri, final Class<T> responseType) {

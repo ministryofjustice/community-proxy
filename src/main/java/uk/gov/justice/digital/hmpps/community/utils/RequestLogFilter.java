@@ -61,8 +61,7 @@ public class RequestLogFilter extends OncePerRequestFilter {
                 log.trace("Response: {} {} - Status {} - Start {}, Duration {} ms", request.getMethod(), request.getRequestURI(), status, start.format(formatter), duration);
             }
 
-        }
-        finally {
+        } finally {
             MDC.remove(REQUEST_DURATION);
             MDC.remove(RESPONSE_STATUS);
             MDC.remove(SKIP_LOGGING);

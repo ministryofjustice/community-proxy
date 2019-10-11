@@ -17,24 +17,24 @@ import java.time.LocalDate;
 @Data
 public class ManagedOffender {
 
-    @ApiModelProperty(required = true, value="The officer code for this staff member", example="PX0001")
+    @ApiModelProperty(required = true, value = "The officer code for this staff member", example = "PX0001")
     private String staffCode;
-    @ApiModelProperty(required = true, value="The internal Delius ID for the offender", example="123345")
+    @ApiModelProperty(required = true, value = "The internal Delius ID for the offender", example = "123345")
     private Long offenderId;
-    @ApiModelProperty(required = true, value="The Noms number for the offender", example="GK8876H")
+    @ApiModelProperty(required = true, value = "The Noms number for the offender", example = "GK8876H")
     private String nomsNumber;
-    @ApiModelProperty(required = true, value="The CRN number in Delius for the offender", example="T99SM")
+    @ApiModelProperty(required = true, value = "The CRN number in Delius for the offender", example = "T99SM")
     private String crnNumber;
-    @ApiModelProperty(required = true, value="The offender surname", example="SMITH")
+    @ApiModelProperty(required = true, value = "The offender surname", example = "SMITH")
     private String offenderSurname;
-    @ApiModelProperty(required = true, value="True if this staff member is the the current responsible officer", example="true")
+    @ApiModelProperty(required = true, value = "True if this staff member is the the current responsible officer", example = "true")
     private boolean isCurrentRo;
-    @ApiModelProperty(required = true, value="True if this staff member is a current offender manager for the offender", example="true")
+    @ApiModelProperty(required = true, value = "True if this staff member is a current offender manager for the offender", example = "true")
     private boolean isCurrentOm;
-    @ApiModelProperty(required = true, value="True if this staff member is a current prison offender manager for the offender", example="false")
+    @ApiModelProperty(required = true, value = "True if this staff member is a current prison offender manager for the offender", example = "false")
     private boolean isCurrentPom;
-    @ApiModelProperty(required = true, value="The date that the offender manager was assigned", example="12/03/2019")
+    @ApiModelProperty(required = true, value = "The date that the offender manager was assigned", example = "12/03/2019")
     private LocalDate omStartDate;
-    @ApiModelProperty(required = true, value="The date that the offender manager stopped their assignment to this offender (null if active)", example="")
+    @ApiModelProperty(required = true, value = "The date that the offender manager stopped their assignment to this offender (null if active)", example = "")
     private LocalDate omEndDate;
 }
