@@ -10,9 +10,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
-import org.springframework.security.oauth2.client.OAuth2ClientContext;
-import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
@@ -127,15 +124,4 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     private Contact contactInfo() {
         return new Contact("HMPPS Digital Studio", "", "feedback@digital.justice.gov.uk");
     }
-
-    @Bean
-    public ClientCredentialsResourceDetails communityApiClientCredentials() {
-        return new ClientCredentialsResourceDetails();
-    }
-
-    @Bean
-    public OAuth2ClientContext oAuth2ClientContext() {
-        return new DefaultOAuth2ClientContext();
-    }
-
 }

@@ -39,7 +39,7 @@ public class RestCallHelper {
     public <T> ResponseEntity<T> getForList(final URI uri, final ParameterizedTypeReference<T> responseType) {
 
         tokenService.checkOrRenew();
-        return restTemplateResource.exchange(uri.toString(), HttpMethod.GET, tokenService.getTokenEnabledRequestEntity(null), responseType);
+        return restTemplateResource.exchange(uri.toString(), HttpMethod.GET, tokenService.getTokenEnabledRequestEntity(), responseType);
     }
 
     /**
@@ -63,7 +63,7 @@ public class RestCallHelper {
         final var exchange = restTemplateResource.exchange(
                 uri.toString(),
                 HttpMethod.GET,
-                tokenService.getTokenEnabledRequestEntity(null), responseType);
+                tokenService.getTokenEnabledRequestEntity(), responseType);
         return exchange.getBody();
     }
 
@@ -72,6 +72,6 @@ public class RestCallHelper {
         return restTemplateResource.exchange(
                 uri.toString(),
                 HttpMethod.GET,
-                tokenService.getTokenEnabledRequestEntity(null), responseType);
+                tokenService.getTokenEnabledRequestEntity(), responseType);
     }
 }

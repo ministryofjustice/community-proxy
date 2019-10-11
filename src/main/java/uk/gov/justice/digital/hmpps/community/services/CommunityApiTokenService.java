@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -34,15 +35,7 @@ public class CommunityApiTokenService {
         this.parser = new DefaultJwtParser();
     }
 
-    public String getJwtToken() {
-        return jwtToken;
-    }
-
-    public void setJwtToken(final String jwtToken) {
-        this.jwtToken = jwtToken;
-    }
-
-    public void checkOrRenew() {
+    void checkOrRenew() {
 
         if (jwtToken == null || isTokenExpired()) {
             renewCachedToken();
@@ -61,44 +54,36 @@ public class CommunityApiTokenService {
     }
 
     public boolean isTokenExpired() {
-
-        var result = true;
-
         final var expiry = getExpiryDate();
-        if (expiry != null) {
-            log.info("* * * Token expiry time is : {} ", expiry);
+        return expiry.map(d -> {
+            log.info("* * * Token expiry time is : {} ", d);
             final var now = new Date();
-            if (expiry != null && expiry.after(now)) {
-                result = false;
-            }
-        }
-        return result;
+            return !d.after(now);
+        }).orElse(Boolean.FALSE);
     }
 
-    public Date getExpiryDate() {
-
+    public Optional<Date> getExpiryDate() {
         try {
             // Convert to an unsigned token to extract the claims without the signing key
             final var splitToken = jwtToken.split("\\.");
             final var unsignedToken = splitToken[0] + "." + splitToken[1] + ".";
             final Jwt<?, ?> jwt = parser.parse(unsignedToken);
             final var claims = (Claims) jwt.getBody();
-            return claims.getExpiration();
+            return Optional.of(claims.getExpiration());
         } catch (final ExpiredJwtException exp) {
             log.info("Token expired {} - msg {}", jwtToken, exp.getMessage());
         } catch (final Exception e) {
-            log.info("Exception during token check {} - msg {}", jwtToken, e.getMessage());
+            log.warn("Exception during token check {} - msg {}", jwtToken, e);
         }
 
-        return null;
+        return Optional.empty();
     }
 
     // Creates the request entity and includes the cached JWT token in the Authorization header
-    public HttpEntity<?> getTokenEnabledRequestEntity(final Object entity) {
-
+    HttpEntity<?> getTokenEnabledRequestEntity() {
         final var headers = new HttpHeaders();
         headers.setBearerAuth(jwtToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
-        return new HttpEntity<>(entity, headers);
+        return new HttpEntity<>(null, headers);
     }
 }

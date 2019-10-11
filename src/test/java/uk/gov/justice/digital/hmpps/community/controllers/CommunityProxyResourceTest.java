@@ -3,17 +3,16 @@ package uk.gov.justice.digital.hmpps.community.controllers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JsonContent;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.RestTemplate;
 import uk.gov.justice.digital.hmpps.community.CommunityProxyApplication;
 import uk.gov.justice.digital.hmpps.community.model.ManagedOffender;
 import uk.gov.justice.digital.hmpps.community.services.CommunityApiClient;
@@ -33,10 +32,8 @@ public class CommunityProxyResourceTest {
     @MockBean
     private CommunityApiClient communityApiClient;
 
-    // Preconfigured as a named bean in RestTemplateConfiguration
     @Autowired
-    @Qualifier("proxyApiOauthRestTemplate")
-    RestTemplate restTemplate;
+    TestRestTemplate restTemplate;
 
     @Value("${test.token.expired}")
     private String expiredToken;
