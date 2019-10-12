@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.community.security;
+package uk.gov.justice.digital.hmpps.community.config;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,7 +10,7 @@ import java.util.Map;
 @Component
 public class UserSecurityUtils implements AuthenticationFacade {
 
-    public Authentication getAuthentication() {
+    private Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 

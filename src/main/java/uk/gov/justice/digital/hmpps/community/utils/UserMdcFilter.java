@@ -5,7 +5,7 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.digital.hmpps.community.security.UserSecurityUtils;
+import uk.gov.justice.digital.hmpps.community.config.UserSecurityUtils;
 
 import javax.servlet.*;
 import java.io.IOException;

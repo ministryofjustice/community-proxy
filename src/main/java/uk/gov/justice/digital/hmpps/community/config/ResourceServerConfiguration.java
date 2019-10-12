@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.community.security;
+package uk.gov.justice.digital.hmpps.community.config;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;

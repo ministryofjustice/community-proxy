@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.community.security;
+package uk.gov.justice.digital.hmpps.community.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +9,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
-import uk.gov.justice.digital.hmpps.community.utils.W3cTracingInterceptor;
 
 import java.time.Duration;
 
@@ -33,7 +32,6 @@ public class RestTemplateConfiguration {
         log.info("* * * Creating Delius health rest template with URL {}", deliusApiRootUri);
         return restTemplateBuilder
                 .rootUri(deliusApiRootUri)
-                .additionalInterceptors(new W3cTracingInterceptor())
                 .setConnectTimeout(pingTimeout)
                 .setReadTimeout(pingTimeout)
                 .build();
@@ -44,7 +42,6 @@ public class RestTemplateConfiguration {
         log.info("* * * Creating Delius resource rest template with URL {}", deliusApiRootUri);
         return restTemplateBuilder
                 .rootUri(deliusApiRootUri)
-                .additionalInterceptors(new W3cTracingInterceptor())
                 .setConnectTimeout(apiTimeout)
                 .setReadTimeout(apiTimeout)
                 .build();

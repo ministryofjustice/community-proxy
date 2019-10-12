@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.community.security;
+package uk.gov.justice.digital.hmpps.community.config;
 
 import com.microsoft.applicationinsights.TelemetryClient;
 import org.apache.commons.lang3.StringUtils;
