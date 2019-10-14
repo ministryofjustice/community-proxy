@@ -6,6 +6,8 @@ Environment variables for web and worker containers
 env:
   - name: SERVER_PORT
     value: {{ .Values.image.port | quote }}
+  - name: SPRING_PROFILES_ACTIVE
+    value: "logstash"
   - name: DELIUS_ENDPOINT_URL
     value: {{ .Values.env.DELIUS_ENDPOINT_URL | quote }}
   - name: DELIUS_API_USERNAME
