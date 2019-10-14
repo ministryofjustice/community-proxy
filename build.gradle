@@ -103,6 +103,8 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.0'
     implementation 'com.pauldijou:jwt-core_2.11:4.1.0'
 
+    implementation configurations.agentDeps
+
     compileOnly 'org.projectlombok:lombok:1.18.10'
 
     testImplementation "org.springframework.boot:spring-boot-starter-test" 
@@ -123,8 +125,6 @@ dependencies {
     testImplementation 'com.github.tomjankes:wiremock-groovy:0.2.0'
     testImplementation 'org.spockframework:spock-spring:1.1-groovy-2.4'
     testImplementation 'org.spockframework:spock-core:1.1-groovy-2.4'
-
-    compile configurations.agentDeps
 }
 
 task copyAgent(type: Copy) {
