@@ -6,15 +6,19 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
+@SuppressWarnings("unchecked")
 @RunWith(MockitoJUnitRunner.class)
 public class TokenCheckTest {
     @Mock
@@ -36,23 +40,32 @@ public class TokenCheckTest {
 
     @Test
     public void testNullToken() {
+        when(restTemplateResource.exchange(anyString(), any(), any(), any(Class.class))).thenReturn(ResponseEntity.ok("some response"));
+
         ReflectionTestUtils.setField(tokenService, "jwtToken", null);
         tokenService.checkOrRenew();
 
         // should make a call to logon since token expired
         verify(restTemplateResource).exchange("/logon", HttpMethod.POST, deliusLogonEntity, String.class);
+
+        // token should now be used in request header entity
+        assertThat(tokenService.getTokenEnabledRequestEntity().getHeaders().getFirst(HttpHeaders.AUTHORIZATION)).isEqualTo("Bearer some response");
     }
 
     @Test
     public void testExpiredToken() {
+        when(restTemplateResource.exchange(anyString(), any(), any(), any(Class.class))).thenReturn(ResponseEntity.ok("some response"));
+
         ReflectionTestUtils.setField(tokenService, "jwtToken", EXPIRED_TOKEN);
         tokenService.checkOrRenew();
 
         // should make a call to logon since token expired
         verify(restTemplateResource).exchange("/logon", HttpMethod.POST, deliusLogonEntity, String.class);
+
+        // token should now be used in request header entity
+        assertThat(tokenService.getTokenEnabledRequestEntity().getHeaders().getFirst(HttpHeaders.AUTHORIZATION)).isEqualTo("Bearer some response");
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testValidToken() {
         ReflectionTestUtils.setField(tokenService, "jwtToken", VALID_TOKEN);
@@ -60,5 +73,12 @@ public class TokenCheckTest {
 
         // no call expected
         verify(restTemplateResource, never()).exchange(anyString(), any(), any(), any(Class.class));
+    }
+
+    @Test
+    public void testDeliusFailureThrowsException() {
+        when(restTemplateResource.exchange(anyString(), any(), any(), any(Class.class))).thenThrow(new RuntimeException("Call to delius failed"));
+
+        assertThatThrownBy(() -> tokenService.checkOrRenew()).hasMessageContaining("Call to delius failed");
     }
 }

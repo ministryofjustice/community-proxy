@@ -42,20 +42,15 @@ public class CommunityApiTokenService {
     }
 
     private synchronized void renewCachedToken() {
-
-        try {
-            final var exchange = restTemplateResource.exchange("/logon", HttpMethod.POST, deliusLogonEntity, String.class);
-            jwtToken = exchange.getBody();
-            log.info("* * * Renewed token is {}", jwtToken);
-        } catch (final Exception e) {
-            log.error("* * * Exception renewing Delius API token {} ", e.getMessage());
-        }
+        final var exchange = restTemplateResource.exchange("/logon", HttpMethod.POST, deliusLogonEntity, String.class);
+        jwtToken = exchange.getBody();
+        log.info("Renewed token from delius");
     }
 
     private boolean isTokenExpired() {
         final var expiry = getExpiryDate();
         return expiry.map(d -> {
-            log.info("* * * Token expiry time is : {} ", d);
+            log.info("Token expiry time is : {} ", d);
             final var now = new Date();
             return !d.after(now);
         }).orElse(Boolean.TRUE);
@@ -70,7 +65,7 @@ public class CommunityApiTokenService {
             final var claims = (Claims) jwt.getBody();
             return Optional.of(claims.getExpiration());
         } catch (final ExpiredJwtException exp) {
-            log.info("Token expired {} - msg {}", jwtToken, exp.getMessage());
+            log.info("Token expired - {}", exp.getMessage());
         } catch (final Exception e) {
             log.warn("Exception during token check {} - msg {}", jwtToken, e);
         }
