@@ -25,14 +25,13 @@ public class CommunityApiTokenService {
 
     private final RestTemplate restTemplateResource;
     private final HttpEntity<String> deliusLogonEntity;
-    private final DefaultJwtParser parser;
+    private final DefaultJwtParser parser = new DefaultJwtParser();
 
     public CommunityApiTokenService(@Qualifier("deliusApiLogonEntity") final HttpEntity<String> deliusLogonEntity,
                                     @Qualifier("deliusApiResourceRestTemplate") final RestTemplate restTemplateResource) {
 
         this.restTemplateResource = restTemplateResource;
         this.deliusLogonEntity = deliusLogonEntity;
-        this.parser = new DefaultJwtParser();
     }
 
     void checkOrRenew() {
@@ -53,16 +52,16 @@ public class CommunityApiTokenService {
         }
     }
 
-    public boolean isTokenExpired() {
+    private boolean isTokenExpired() {
         final var expiry = getExpiryDate();
         return expiry.map(d -> {
             log.info("* * * Token expiry time is : {} ", d);
             final var now = new Date();
             return !d.after(now);
-        }).orElse(Boolean.FALSE);
+        }).orElse(Boolean.TRUE);
     }
 
-    public Optional<Date> getExpiryDate() {
+    private Optional<Date> getExpiryDate() {
         try {
             // Convert to an unsigned token to extract the claims without the signing key
             final var splitToken = jwtToken.split("\\.");

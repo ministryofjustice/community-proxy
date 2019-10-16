@@ -6,10 +6,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TokenCheckTest {
@@ -31,15 +35,30 @@ public class TokenCheckTest {
     }
 
     @Test
-    public void testExpiredToken() {
-        ReflectionTestUtils.setField(tokenService, "jwtToken", EXPIRED_TOKEN);
-        final var expiryDate = tokenService.getExpiryDate();
-        assertThat(expiryDate).isEmpty();
+    public void testNullToken() {
+        ReflectionTestUtils.setField(tokenService, "jwtToken", null);
+        tokenService.checkOrRenew();
+
+        // should make a call to logon since token expired
+        verify(restTemplateResource).exchange("/logon", HttpMethod.POST, deliusLogonEntity, String.class);
     }
 
     @Test
+    public void testExpiredToken() {
+        ReflectionTestUtils.setField(tokenService, "jwtToken", EXPIRED_TOKEN);
+        tokenService.checkOrRenew();
+
+        // should make a call to logon since token expired
+        verify(restTemplateResource).exchange("/logon", HttpMethod.POST, deliusLogonEntity, String.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
     public void testValidToken() {
         ReflectionTestUtils.setField(tokenService, "jwtToken", VALID_TOKEN);
-        assertThat(tokenService.isTokenExpired()).isEqualTo(false);
+        tokenService.checkOrRenew();
+
+        // no call expected
+        verify(restTemplateResource, never()).exchange(anyString(), any(), any(), any(Class.class));
     }
 }
