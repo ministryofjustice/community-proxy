@@ -25,14 +25,13 @@ public class CommunityApiTokenService {
 
     private final RestTemplate restTemplateResource;
     private final HttpEntity<String> deliusLogonEntity;
-    private final DefaultJwtParser parser;
+    private final DefaultJwtParser parser = new DefaultJwtParser();
 
     public CommunityApiTokenService(@Qualifier("deliusApiLogonEntity") final HttpEntity<String> deliusLogonEntity,
                                     @Qualifier("deliusApiResourceRestTemplate") final RestTemplate restTemplateResource) {
 
         this.restTemplateResource = restTemplateResource;
         this.deliusLogonEntity = deliusLogonEntity;
-        this.parser = new DefaultJwtParser();
     }
 
     void checkOrRenew() {
@@ -43,26 +42,21 @@ public class CommunityApiTokenService {
     }
 
     private synchronized void renewCachedToken() {
-
-        try {
-            final var exchange = restTemplateResource.exchange("/logon", HttpMethod.POST, deliusLogonEntity, String.class);
-            jwtToken = exchange.getBody();
-            log.info("* * * Renewed token is {}", jwtToken);
-        } catch (final Exception e) {
-            log.error("* * * Exception renewing Delius API token {} ", e.getMessage());
-        }
+        final var exchange = restTemplateResource.exchange("/logon", HttpMethod.POST, deliusLogonEntity, String.class);
+        jwtToken = exchange.getBody();
+        log.info("Renewed token from delius");
     }
 
-    public boolean isTokenExpired() {
+    private boolean isTokenExpired() {
         final var expiry = getExpiryDate();
         return expiry.map(d -> {
-            log.info("* * * Token expiry time is : {} ", d);
+            log.info("Token expiry time is : {} ", d);
             final var now = new Date();
             return !d.after(now);
-        }).orElse(Boolean.FALSE);
+        }).orElse(Boolean.TRUE);
     }
 
-    public Optional<Date> getExpiryDate() {
+    private Optional<Date> getExpiryDate() {
         try {
             // Convert to an unsigned token to extract the claims without the signing key
             final var splitToken = jwtToken.split("\\.");
@@ -71,7 +65,7 @@ public class CommunityApiTokenService {
             final var claims = (Claims) jwt.getBody();
             return Optional.of(claims.getExpiration());
         } catch (final ExpiredJwtException exp) {
-            log.info("Token expired {} - msg {}", jwtToken, exp.getMessage());
+            log.info("Token expired - {}", exp.getMessage());
         } catch (final Exception e) {
             log.warn("Exception during token check {} - msg {}", jwtToken, e);
         }
