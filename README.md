@@ -1,5 +1,8 @@
 # Community API proxy
 
+We now go direct to community API via a /secure route, so we no longer need this proxy.
+
+# Old README follows
 This API accepts and authorises requests on behalf of the Community API and forwards only for authenticated clients.
 
 The authentication process involves checking the JWT token provided by the client in the Authorization header, checking that the token
